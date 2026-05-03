@@ -290,15 +290,29 @@ def perform_update():
         
         # Determine the project path (where the git repo is)
         repo_path_file = os.path.join(BASE_DIR, '.repo_path')
+        project_path = None
+        
         if os.path.exists(repo_path_file):
             with open(repo_path_file, 'r') as f:
                 project_path = f.read().strip()
-        else:
-            project_path = "/home/tony/OpenSurvPro"
+        
+        # Auto-discovery if path is missing or invalid
+        if not project_path or not os.path.exists(project_path):
+            possible_paths = [
+                "/home/tony/OpenSurvPro",
+                "/home/pi/OpenSurvPro",
+                "/home/opensurv/OpenSurvPro",
+                os.path.expanduser("~/OpenSurvPro")
+            ]
+            for p in possible_paths:
+                if os.path.exists(os.path.join(p, "install.sh")):
+                    project_path = p
+                    break
             
-        if not os.path.exists(project_path):
+        if not project_path or not os.path.exists(project_path):
              with open('/tmp/opensurv_update.log', 'a') as f:
-                f.write(f"ERROR: Project path {project_path} not found!\n")
+                f.write(f"ERROR: Could not locate OpenSurvPro project folder automatically.\n")
+                f.write(f"Please run 'sudo ./install.sh' manually inside your project folder once.\n")
              return jsonify({"status": "error", "message": "Project path not found"}), 404
 
         # Disable git prompts to prevent hanging
