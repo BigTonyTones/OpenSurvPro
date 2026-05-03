@@ -133,6 +133,8 @@ async function checkForUpdates(manual = false) {
         }
 
         document.getElementById('local-version-display').innerText = data.local || 'Unknown';
+        const headerVer = document.getElementById('header-version');
+        if (headerVer && data.local) headerVer.innerText = `v${data.local}`;
 
         if (data.update_available) {
             document.getElementById('remote-version-tag').textContent = `(v${data.remote})`;

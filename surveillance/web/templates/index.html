@@ -23,7 +23,7 @@
 
     <div class="dashboard">
         <header>
-            <h1>Tonys OpenSurv <span style="color: var(--accent-color)">PRO</span></h1>
+            <h1>Tonys OpenSurv <span style="color: var(--accent-color)">PRO</span> <span id="header-version" style="font-size: 1rem; vertical-align: middle; margin-left: 10px; opacity: 0.5;">v2.5.0</span></h1>
             <div class="status-badge">
                 <div class="status-dot pulse"></div>
                 <span id="system-status">System Online</span>
@@ -67,8 +67,9 @@
                     <div class="tech-item"><span class="tech-label">RAM</span><span id="sys-mem">--</span></div>
                     <div class="tech-item"><span class="tech-label">UP</span><span id="sys-uptime">--</span></div>
                 </div>
-                <div style="margin-top: 1rem; opacity: 0.5; font-size: 0.75rem; border-top: 1px solid var(--glass-border); padding-top: 0.5rem;">
-                    Local Version: <span id="local-version-display">2.3.3</span>
+                <div style="margin-top: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="opacity: 0.5; font-size: 0.75rem;">Local: <span id="local-version-display">2.5.0</span></span>
+                    <button class="btn btn-sm" onclick="checkForUpdates(true)" style="padding: 4px 10px; font-size: 0.7rem; background: rgba(var(--accent-color-rgb), 0.1); border-color: rgba(var(--accent-color-rgb), 0.3); color: var(--accent-color);">Check for Updates</button>
                 </div>
             </div>
 
