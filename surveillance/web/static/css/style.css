@@ -151,6 +151,42 @@ footer {
     opacity: 0.5;
 }
 
+.btn-danger {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    border: none;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 0 20px rgba(255, 65, 108, 0.4);
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.tech-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.tech-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    opacity: 0.5;
+    font-weight: 800;
+}
+
+#active-screen-info h3 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
 @keyframes pulse {
     0% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.2); opacity: 0.7; }

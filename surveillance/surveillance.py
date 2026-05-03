@@ -4,6 +4,9 @@ import signal
 import sys
 import time
 import threading
+import platform
+import psutil
+import socket
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 import Xlib.display
@@ -57,6 +60,39 @@ def get_monitors():
             "y_offset": 0
         }]
 
+def get_system_info():
+    """Gathers technical specs of the host system"""
+    try:
+        # Get Network IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('8.8.8.8', 1))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = '127.0.0.1'
+        finally:
+            s.close()
+
+        # Get RPi Model if available
+        model = "Unknown Hardware"
+        if os.path.exists("/proc/device-tree/model"):
+            with open("/proc/device-tree/model", "r") as f:
+                model = f.read().strip()
+
+        return {
+            "os": f"{platform.system()} {platform.release()}",
+            "hardware": model,
+            "cpu_usage": f"{psutil.cpu_percent()}%",
+            "memory": f"{psutil.virtual_memory().percent}%",
+            "uptime": int(time.time() - psutil.boot_time()),
+            "ip_address": ip,
+            "hostname": socket.gethostname(),
+            "python_version": platform.python_version()
+        }
+    except Exception as e:
+        logger.error(f"Error gathering system info: {e}")
+        return {}
+
 # --- API Endpoints ---
 
 @app.route('/')
@@ -77,11 +113,34 @@ def status():
             "status": "online",
             "version": "2.0-PRO",
             "monitors": monitors,
-            "screenmanagers": sm_status
+            "screenmanagers": sm_status,
+            "system": get_system_info()
         })
     except Exception as e:
         logger.error(f"API: Global status error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/restart-service', methods=['POST'])
+def restart_service():
+    """Restarts the OpenSurv process"""
+    logger.info("API: Restarting OpenSurv service...")
+    def restart():
+        time.sleep(1)
+        os.execv(sys.executable, ['python3'] + sys.argv)
+    
+    threading.Thread(target=restart).start()
+    return jsonify({"status": "success", "message": "Restarting..."})
+
+@app.route('/api/reboot-host', methods=['POST'])
+def reboot_host():
+    """Reboots the entire host machine"""
+    logger.info("API: Rebooting host machine...")
+    def reboot():
+        time.sleep(1)
+        os.system('sudo reboot')
+    
+    threading.Thread(target=reboot).start()
+    return jsonify({"status": "success", "message": "Rebooting host..."})
 
 @app.route('/api/next', methods=['POST'])
 def next_screen():

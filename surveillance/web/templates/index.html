@@ -46,6 +46,50 @@
                     <p>No active streams detected.</p>
                 </div>
             </div>
+
+            <!-- Remote Management -->
+            <div class="card">
+                <h2>🛠️ Management</h2>
+                <div class="controls">
+                    <button class="btn" onclick="restartService()" style="background: rgba(255,255,255,0.1)">Restart Service</button>
+                    <button class="btn btn-danger" onclick="rebootHost()" style="margin-top: 10px;">Reboot Host</button>
+                </div>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="card">
+                <h2>📊 Technical Details</h2>
+                <div class="tech-grid">
+                    <div class="tech-item"><span class="tech-label">OS</span><span id="sys-os">--</span></div>
+                    <div class="tech-item"><span class="tech-label">HW</span><span id="sys-hw">--</span></div>
+                    <div class="tech-item"><span class="tech-label">IP</span><span id="sys-ip">--</span></div>
+                    <div class="tech-item"><span class="tech-label">CPU</span><span id="sys-cpu">--</span></div>
+                    <div class="tech-item"><span class="tech-label">RAM</span><span id="sys-mem">--</span></div>
+                    <div class="tech-item"><span class="tech-label">UP</span><span id="sys-uptime">--</span></div>
+                </div>
+            </div>
+            <!-- Remote Management -->
+            <div class="card">
+                <h2>🛠️ Management</h2>
+                <div class="controls" style="flex-direction: column;">
+                    <button class="btn" onclick="restartService()" style="background: rgba(255,255,255,0.1)">Restart Service</button>
+                    <button class="btn btn-danger" onclick="rebootHost()" style="margin-top: 10px;">Reboot Host</button>
+                    <a href="http://localhost:6453" target="_blank" class="btn btn-primary" style="margin-top: 20px; text-decoration: none; text-align: center;">Tonys Opensurv Manager</a>
+                </div>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="card">
+                <h2>📊 Technical Details</h2>
+                <div class="tech-grid">
+                    <div class="tech-item"><span class="tech-label">OS</span><span id="sys-os">--</span></div>
+                    <div class="tech-item"><span class="tech-label">HW</span><span id="sys-hw">--</span></div>
+                    <div class="tech-item"><span class="tech-label">IP</span><span id="sys-ip">--</span></div>
+                    <div class="tech-item"><span class="tech-label">CPU</span><span id="sys-cpu">--</span></div>
+                    <div class="tech-item"><span class="tech-label">RAM</span><span id="sys-mem">--</span></div>
+                    <div class="tech-item"><span class="tech-label">UP</span><span id="sys-uptime">--</span></div>
+                </div>
+            </div>
         </div>
 
         <footer>
