@@ -75,9 +75,15 @@ def get_system_info():
 
         # Get RPi Model if available
         model = "Unknown Hardware"
-        if os.path.exists("/proc/device-tree/model"):
-            with open("/proc/device-tree/model", "r") as f:
-                model = f.read().strip()
+        model_paths = ["/proc/device-tree/model", "/sys/firmware/devicetree/base/model"]
+        for path in model_paths:
+            if os.path.exists(path):
+                try:
+                    with open(path, "r") as f:
+                        model = f.read().strip('\0').strip()
+                        break
+                except Exception:
+                    continue
 
         return {
             "os": f"{platform.system()} {platform.release()}",
