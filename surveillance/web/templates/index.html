@@ -83,6 +83,19 @@
                 </div>
             </div>
 
+            <!-- Network Management -->
+            <div class="card">
+                <h2>Network</h2>
+                <div class="network-info" style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">
+                    <div>IP: <span id="current-ip-display">Loading...</span></div>
+                    <div>WiFi: <span id="wifi-ssid-display">Checking...</span></div>
+                </div>
+                <div class="controls" style="flex-direction: column;">
+                    <button class="btn" onclick="openWifiModal()" style="background: rgba(255,255,255,0.1)">Configure WiFi</button>
+                    <button class="btn" onclick="openStaticIpModal()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">Static IP Settings</button>
+                </div>
+            </div>
+
             <!-- Update Management -->
             <div class="card">
                 <h2>Updates</h2>
@@ -110,6 +123,54 @@
         <footer>
             OpenSurv Pro &bull; Advanced Surveillance Dashboard &bull; 2026
         </footer>
+    </div>
+
+    <!-- WiFi Modal -->
+    <div id="wifi-modal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2>WiFi Configuration</h2>
+                <span class="close" onclick="closeWifiModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Available Networks</label>
+                    <select id="wifi-ssid-select" class="form-control">
+                        <option value="">Scanning...</option>
+                    </select>
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Password</label>
+                    <input type="password" id="wifi-password" class="form-control" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" onclick="applyWifi()" style="margin-top: 20px; width: 100%;">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Static IP Modal -->
+    <div id="static-ip-modal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2>Static IP Settings</h2>
+                <span class="close" onclick="closeStaticIpModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>IP Address</label>
+                    <input type="text" id="static-ip" class="form-control" placeholder="192.168.1.100">
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Gateway</label>
+                    <input type="text" id="static-gateway" class="form-control" placeholder="192.168.1.1">
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>DNS</label>
+                    <input type="text" id="static-dns" class="form-control" value="8.8.8.8">
+                </div>
+                <button class="btn btn-primary" onclick="applyStaticIp()" style="margin-top: 20px; width: 100%;">Apply Settings</button>
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

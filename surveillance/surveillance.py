@@ -196,6 +196,71 @@ def check_update():
     
     return jsonify({"update_available": False, "error": "Could not reach update server"})
 
+@app.route('/api/network-status')
+def get_network_status():
+    try:
+        # Get active connection details
+        ip_cmd = "hostname -I | awk '{print $1}'"
+        ip_addr = subprocess.check_output(ip_cmd, shell=True).decode().strip()
+        
+        wifi_cmd = "nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2"
+        try:
+            wifi_ssid = subprocess.check_output(wifi_cmd, shell=True).decode().strip()
+        except:
+            wifi_ssid = "Not Connected"
+
+        # Scan for nearby networks (limited to 5 for speed)
+        scan_cmd = "nmcli -t -f ssid dev wifi list | head -n 5"
+        try:
+            networks = subprocess.check_output(scan_cmd, shell=True).decode().split('\n')
+            networks = [n for n in networks if n]
+        except:
+            networks = []
+
+        return jsonify({
+            "status": "success",
+            "ip": ip_addr,
+            "ssid": wifi_ssid,
+            "available": networks
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+@app.route('/api/network-configure', methods=['POST'])
+def configure_network():
+    try:
+        data = request.json
+        mode = data.get('mode') # 'wifi' or 'static'
+        
+        if mode == 'wifi':
+            ssid = data.get('ssid')
+            psk = data.get('password')
+            # Use nmcli to connect
+            cmd = f"sudo nmcli dev wifi connect '{ssid}' password '{psk}'"
+            subprocess.check_call(cmd, shell=True)
+            return jsonify({"status": "success", "message": f"Connecting to {ssid}..."})
+            
+        elif mode == 'static':
+            iface = data.get('interface', 'eth0')
+            ip = data.get('ip')
+            gw = data.get('gateway')
+            dns = data.get('dns', '8.8.8.8')
+            
+            # nmcli commands for static IP
+            # We assume a connection already exists, we modify it
+            conn_name = subprocess.check_output(f"nmcli -t -f name,device connection show --active | grep {iface} | cut -d: -f1", shell=True).decode().strip()
+            if not conn_name:
+                return jsonify({"status": "error", "message": f"No active connection found on {iface}"})
+            
+            subprocess.check_call(f"sudo nmcli connection modify '{conn_name}' ipv4.addresses {ip}/24 ipv4.gateway {gw} ipv4.dns {dns} ipv4.method manual", shell=True)
+            subprocess.Popen(f"sudo nmcli connection up '{conn_name}'", shell=True) # Async because we might lose connection
+            
+            return jsonify({"status": "success", "message": "Static IP applied. Connection may reset."})
+
+    except Exception as e:
+        logger.error(f"Network config failed: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/api/update-log')
 def get_update_log():
     try:

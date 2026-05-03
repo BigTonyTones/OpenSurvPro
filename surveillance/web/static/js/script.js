@@ -203,9 +203,113 @@ function closeUpdateNotification() {
     document.getElementById('update-notification').style.display = 'none';
 }
 
+// Network Management
+async function fetchNetworkStatus() {
+    try {
+        const response = await fetch('/api/network-status');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            setElemText('current-ip-display', data.ip || 'Unknown');
+            setElemText('wifi-ssid-display', data.ssid || 'Disconnected');
+            
+            // Populate WiFi Select
+            const select = document.getElementById('wifi-ssid-select');
+            if (select && data.available) {
+                const currentVal = select.value;
+                select.innerHTML = '<option value="">Select a network...</option>';
+                data.available.forEach(ssid => {
+                    const opt = document.createElement('option');
+                    opt.value = ssid;
+                    opt.innerText = ssid;
+                    select.appendChild(opt);
+                });
+                if (currentVal) select.value = currentVal;
+            }
+        }
+    } catch (e) {
+        console.error('Network status fetch failed:', e);
+    }
+}
+
+function openWifiModal() {
+    document.getElementById('wifi-modal').style.display = 'flex';
+    fetchNetworkStatus();
+}
+
+function closeWifiModal() {
+    document.getElementById('wifi-modal').style.display = 'none';
+}
+
+async function applyWifi() {
+    const ssid = document.getElementById('wifi-ssid-select').value;
+    const password = document.getElementById('wifi-password').value;
+    
+    if (!ssid) {
+        alert('Please select a network.');
+        return;
+    }
+    
+    if (!confirm(`Connect to ${ssid}? This may reset your connection.`)) return;
+    
+    try {
+        const response = await fetch('/api/network-configure', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: 'wifi', ssid, password })
+        });
+        const data = await response.json();
+        alert(data.message || data.status);
+        if (data.status === 'success') closeWifiModal();
+    } catch (e) {
+        alert('Failed to send WiFi configuration.');
+    }
+}
+
+function openStaticIpModal() {
+    document.getElementById('static-ip-modal').style.display = 'flex';
+    // Pre-fill with current IP
+    const currentIp = document.getElementById('current-ip-display').innerText;
+    if (currentIp !== 'Loading...') {
+        document.getElementById('static-ip').value = currentIp;
+    }
+}
+
+function closeStaticIpModal() {
+    document.getElementById('static-ip-modal').style.display = 'none';
+}
+
+async function applyStaticIp() {
+    const ip = document.getElementById('static-ip').value;
+    const gateway = document.getElementById('static-gateway').value;
+    const dns = document.getElementById('static-dns').value;
+    
+    if (!ip || !gateway) {
+        alert('IP and Gateway are required.');
+        return;
+    }
+    
+    if (!confirm('DANGER: Applying a static IP may make the device unreachable if settings are incorrect. Proceed?')) return;
+    
+    try {
+        const response = await fetch('/api/network-configure', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: 'static', ip, gateway, dns, interface: 'eth0' })
+        });
+        const data = await response.json();
+        alert(data.message || data.status);
+        if (data.status === 'success') closeStaticIpModal();
+    } catch (e) {
+        alert('Failed to send static IP configuration.');
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     fetchData();
     checkForUpdates();
+    fetchNetworkStatus();
     setInterval(fetchData, 2000);
+    setInterval(fetchNetworkStatus, 10000); // Network status every 10s
 });

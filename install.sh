@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.2.1"
+fullversion_for_installer="Tonys OpenSurv Pro v2.3.0"
 AUTO_INSTALL=false
 KILL_SERVER=true
 for arg in "$@"; do
@@ -98,7 +98,7 @@ pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" >
 # --- Step 3: User Configuration ---
 echo "Step 3/7: Configuring user permissions and security..."
 id -u opensurv > /dev/null 2>&1 || useradd -m opensurv -s /bin/bash
-echo "opensurv ALL=(ALL) NOPASSWD: $BASEPATH/install.sh" > /etc/sudoers.d/opensurv
+echo "opensurv ALL=(ALL) NOPASSWD: $BASEPATH/install.sh, /usr/bin/nmcli" > /etc/sudoers.d/opensurv
 chmod 0440 /etc/sudoers.d/opensurv
 configure_lightdm > /dev/null 2>&1
 
