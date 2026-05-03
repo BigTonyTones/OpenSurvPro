@@ -230,6 +230,11 @@ def perform_update():
             
         update_cmd = f"cd {project_path} && git fetch --all && git reset --hard origin/main && {sudo_prefix}./install.sh --auto --no-kill-server"
         
+        # Log diagnostic info to the file so the user can see it in the terminal modal
+        with open('/tmp/opensurv_update.log', 'a') as f:
+            f.write(f"Checking project at: {project_path}\n")
+            f.write(f"Command: {update_cmd}\n\n")
+
         subprocess.Popen(['/bin/bash', '-c', update_cmd], 
                         stdout=open('/tmp/opensurv_update.log', 'a'),
                         stderr=subprocess.STDOUT,

@@ -1,4 +1,4 @@
-# Tonys OpenSurv Pro - Advanced Open Source Surveillance v2.1.7
+# Tonys OpenSurv Pro - Advanced Open Source Surveillance v2.1.8
 
 OpenSurv PRO is a major modernization of the original OpenSurv project, designed to transform your Raspberry Pi or compatible Linux device into a professional-grade, high-performance surveillance station. 
 
