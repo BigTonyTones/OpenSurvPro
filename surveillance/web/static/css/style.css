@@ -28,6 +28,22 @@ body {
     margin: 0 auto;
 }
 
+.top-nav {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.manager-btn {
+    width: 100%;
+    max-width: 400px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2);
+}
+
 header {
     display: flex;
     justify-content: space-between;

@@ -67,6 +67,12 @@ function updateUI(data) {
             setElemText('sys-cpu', data.system.cpu_usage);
             setElemText('sys-mem', data.system.memory);
             setElemText('sys-uptime', formatUptime(data.system.uptime));
+
+            // Update Manager Link
+            const managerLink = document.getElementById('manager-link');
+            if (managerLink && data.system.ip_address) {
+                managerLink.href = `http://${data.system.ip_address}:6453`;
+            }
         }
     }
 }
