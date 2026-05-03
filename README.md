@@ -101,6 +101,14 @@ Configuration is managed via YAML files in `/etc/opensurv/`:
 
 ---
 
+## Credits & Attribution
+**Tonys OpenSurv Pro** is a community-driven modernization and fork of the original **OpenSurv** project. We would like to thank the original authors and contributors for providing the robust foundation this professional version is built upon.
+
+- **Original Project**: [OpenSurv](https://github.com/OpenSurv/OpenSurv)
+- **License**: This project is licensed under the [GNU General Public License v2.0](LICENSE).
+
+---
+
 ## License & Community
 OpenSurv PRO is based on the original OpenSurv project and is provided as-is for the community.
 - **Discussions**: [GitHub Discussions](https://github.com/BigTonyTones/OpenSurvPro/discussions)

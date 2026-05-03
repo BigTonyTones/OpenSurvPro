@@ -1,4 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+# Tonys OpenSurv Pro
+# A modernization and fork of the original OpenSurv project (github.com/OpenSurv/OpenSurv)
+# Licensed under GNU GPL v2.0
 import os
 import signal
 import sys
