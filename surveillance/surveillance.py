@@ -170,8 +170,9 @@ def check_update():
         with open(version_path, 'r') as f:
             local_version = f.read().strip()
         
-        # Check GitHub for latest version
-        repo_url = "https://raw.githubusercontent.com/BigTonyTones/OpenSurvPro/main/version.txt"
+        # Check GitHub for latest version (with cache busting)
+        import time
+        repo_url = f"https://raw.githubusercontent.com/BigTonyTones/OpenSurvPro/main/version.txt?t={int(time.time())}"
         response = requests.get(repo_url, timeout=5)
         if response.status_code == 200:
             remote_version = response.text.strip()
