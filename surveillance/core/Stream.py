@@ -308,7 +308,8 @@ class Stream:
                         --vd-lavc-fast \
                         --cache=no \
                         --rtsp-transport=tcp \
-                        --hwdec=auto-safe \
+                        --hwdec=auto \
+                        --framedrop=decoder \
                         --network-timeout=10 \
                         {self.mpv_extra_options} \
                         {self._construct_audio_argument()} \
