@@ -29,7 +29,7 @@ ask_yes_no() {
 }
 
 show_version() {
-    grep fullversion_for_installer "$BASEPATH/surveillance/surveillance.py" | head -n 1 | cut -d"=" -f2
+    echo "$fullversion_for_installer"
 }
 
 configure_lightdm() {
@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.9"
+fullversion_for_installer="Tonys OpenSurv Pro v2.2.0"
 AUTO_INSTALL=false
 KILL_SERVER=true
 for arg in "$@"; do
