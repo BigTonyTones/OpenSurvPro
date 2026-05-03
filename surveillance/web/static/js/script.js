@@ -106,6 +106,13 @@ async function restartService() {
     }
 }
 
+async function stopService() {
+    if (confirm('Are you sure you want to stop the OpenSurv service? This will shut down the display.')) {
+        await fetch('/api/stop-service', { method: 'POST' });
+        alert('Service is stopping. This connection will be lost.');
+    }
+}
+
 async function rebootHost() {
     if (confirm('DANGER: This will reboot the entire machine. Proceed?')) {
         await fetch('/api/reboot-host', { method: 'POST' });

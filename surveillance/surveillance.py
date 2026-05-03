@@ -150,6 +150,18 @@ def reboot_host():
     threading.Thread(target=reboot).start()
     return jsonify({"status": "success", "message": "Rebooting host..."})
 
+@app.route('/api/stop-service', methods=['POST'])
+def stop_service():
+    """Stops the OpenSurv service (and LightDM)"""
+    logger.info("API: Stopping OpenSurv service...")
+    def stop():
+        time.sleep(1)
+        os.system('sudo systemctl stop lightdm')
+        os.system('pkill -f surveillance.py')
+    
+    threading.Thread(target=stop).start()
+    return jsonify({"status": "success", "message": "Stopping service..."})
+
 @app.route('/api/next', methods=['POST'])
 def next_screen():
     for sm in screenmanagers:
