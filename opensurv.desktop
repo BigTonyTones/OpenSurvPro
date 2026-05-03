@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Opensurv
-Comment=Start Opensurv
+Name=Tonys OpenSurv Pro
+Comment=Tonys OpenSurv Pro
 Exec=/home/opensurv/bin/opensurv
 Type=Application

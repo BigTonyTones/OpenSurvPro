@@ -7,6 +7,7 @@ import threading
 import platform
 import psutil
 import socket
+import logging
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 import Xlib.display
@@ -15,7 +16,12 @@ from core.util.config import cfg
 from core.util.setuplogging import setup_logging
 from core.ScreenManager import ScreenManager
 
-fullversion_for_installer="OpenSurv PRO v2.1.0"
+# Version Info
+fullversion_for_installer="Tonys OpenSurv Pro v2.1.0"
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("TonysOpenSurvPro")
 
 # Get absolute path for the web directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
