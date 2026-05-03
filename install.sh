@@ -92,6 +92,7 @@ rsync -av --ignore-existing "$SOURCEDIR/etc/" "$DESTPATH/etc/"
 
 # Always update core logic
 rsync -av "$SOURCEDIR/core" "$DESTPATH/lib/"
+rsync -av "$SOURCEDIR/web" "$DESTPATH/lib/"
 rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/"
 rsync -av opensurv "$DESTPATH/bin/"
 rsync -av opensurv.desktop "/usr/share/xsessions/"
