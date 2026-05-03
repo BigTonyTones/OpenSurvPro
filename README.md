@@ -6,9 +6,9 @@ OpenSurv PRO focuses on **Premium Aesthetics**, **Remote Management**, and **Low
 
 ---
 
-## 🚀 New PRO Features
+## New PRO Features
 
-### 💻 Modern Web Dashboard
+### Modern Web Dashboard
 Control your entire surveillance station remotely from any device on your network (Desktop, Tablet, or Mobile).
 - **Live Status**: Real-time monitoring of all active streams, monitors, and screens.
 - **Remote Control**: Switch screens, pause/resume rotation, restart services, or reboot the host machine with a single click.
@@ -17,13 +17,13 @@ Control your entire surveillance station remotely from any device on your networ
 - **Integrated Manager**: Quick link access to the GUI Editor and system management at the top of the dashboard.
 - **Access**: Available by default at `http://<your-device-ip>:5000` (Dashboard) and `http://<your-device-ip>:6453` (GUI Editor).
 
-### ✨ Premium Aesthetics
+### Premium Aesthetics
 The entire visual engine has been overhauled for a state-of-the-art look:
 - **Deep-Space Gradients**: Replaced solid black backgrounds with dynamic vertical gradients.
 - **Glassmorphism UI**: High-fidelity UI elements with alpha-transparency, subtle borders, and modern typography.
 - **Smooth Transitions**: Refined screen switching and status overlays.
 
-### ⚡ Low-Latency Performance
+### Low-Latency Performance
 Specifically optimized for high-density monitoring on low-power hardware like the Raspberry Pi:
 - **Parallel Startup**: All camera streams launch simultaneously, reducing startup delay from 20+ seconds to just ~3 seconds.
 - **Multi-Threaded Probing**: Connectivity checks are performed in parallel, eliminating linear bottlenecks.
@@ -31,7 +31,7 @@ Specifically optimized for high-density monitoring on low-power hardware like th
 
 ---
 
-## 🛠️ Standard Features
+## Standard Features
 
 - **Self-Healing Watchdogs**: Every stream is monitored. If a feed drops, the watchdog automatically restarts it.
 - **Auto-Layout**: Coordinates are automatically calculated for any number of streams to perfectly fill your monitor.
@@ -41,7 +41,7 @@ Specifically optimized for high-density monitoring on low-power hardware like th
 
 ---
 
-## 📦 Getting Started
+## Getting Started
 
 1.  **Clone the Repository**:
     ```bash
@@ -59,7 +59,7 @@ Specifically optimized for high-density monitoring on low-power hardware like th
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 Configuration is managed via YAML files in `/etc/opensurv/`:
 - **`general.yml`**: System-wide settings and API configuration.
@@ -68,7 +68,7 @@ Configuration is managed via YAML files in `/etc/opensurv/`:
 
 ---
 
-## ⌨️ Operation & Controls
+## Operation & Controls
 
 ### Web Interface
 - Access `http://<device-ip>:5000` for full remote control.
@@ -81,7 +81,7 @@ Configuration is managed via YAML files in `/etc/opensurv/`:
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 - **Logs**: Located at `/home/opensurv/logs/main.log`.
 - **API Status**: Check `http://<ip>:5000/api/status` for raw system health data.
@@ -90,7 +90,7 @@ Configuration is managed via YAML files in `/etc/opensurv/`:
 
 ---
 
-## 📝 License & Community
+## License & Community
 OpenSurv PRO is based on the original OpenSurv project and is provided as-is for the community.
 - **Discussions**: [GitHub Discussions](https://github.com/BigTonyTones/OpenSurvPro/discussions)
 - **Issues**: [GitHub Issues](https://github.com/BigTonyTones/OpenSurvPro/issues)
