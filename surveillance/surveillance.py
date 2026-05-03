@@ -225,18 +225,29 @@ def perform_update():
             with open(repo_path_file, 'r') as f:
                 project_path = f.read().strip()
         else:
-            # Fallback to the parent of the installed lib dir
             project_path = "/home/tony/OpenSurvPro"
             
+        if not os.path.exists(project_path):
+             with open('/tmp/opensurv_update.log', 'a') as f:
+                f.write(f"ERROR: Project path {project_path} not found!\n")
+             return jsonify({"status": "error", "message": "Project path not found"}), 404
+
+        # Disable git prompts to prevent hanging
+        env = os.environ.copy()
+        env["GIT_TERMINAL_PROMPT"] = "0"
+        
         update_cmd = f"cd {project_path} && git fetch --all && git reset --hard origin/main && {sudo_prefix}./install.sh --auto --no-kill-server"
         
-        # Log diagnostic info to the file so the user can see it in the terminal modal
+        # Log diagnostic info
         with open('/tmp/opensurv_update.log', 'a') as f:
             f.write(f"Checking project at: {project_path}\n")
-            f.write(f"Command: {update_cmd}\n\n")
+            f.write(f"Executing update command...\n")
 
-        subprocess.Popen(['/bin/bash', '-c', update_cmd], 
-                        stdout=open('/tmp/opensurv_update.log', 'a'),
+        # Use a single string for shell execution and ensure output is flushed
+        subprocess.Popen(update_cmd, 
+                        shell=True,
+                        env=env,
+                        stdout=open('/tmp/opensurv_update.log', 'a', buffering=1),
                         stderr=subprocess.STDOUT,
                         start_new_session=True)
         return jsonify({"status": "success", "message": "Update started."})
