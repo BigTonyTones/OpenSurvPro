@@ -304,14 +304,9 @@ class Stream:
                         --screen=\'{self.monitor_number}\' \
                         --geometry=\'{self._convert_to_mpv_coordinates()}\' \
                         --profile=low-latency \
-                        --untimed \
                         --vd-lavc-threads=1 \
                         --vd-lavc-fast \
-                        --cache=yes \
-                        --demuxer-max-bytes=2M \
-                        --demuxer-max-back-bytes=1M \
-                        --demuxer-readahead-secs=0 \
-                        --stream-buffer-size=512k \
+                        --cache=no \
                         --rtsp-transport=tcp \
                         --hwdec=auto-safe \
                         --network-timeout=10 \
