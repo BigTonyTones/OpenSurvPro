@@ -4,8 +4,6 @@ OpenSurv PRO is a major modernization of the original OpenSurv project, designed
 
 OpenSurv PRO focuses on **Premium Aesthetics**, **Remote Management**, and **Low-Latency Performance**.
 
-![OpenSurv PRO Dashboard Preview](assets/dashboard_preview.png)
-
 ---
 
 ## New PRO Features
