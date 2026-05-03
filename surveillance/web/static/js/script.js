@@ -151,23 +151,52 @@ async function checkForUpdates(manual = false) {
     }
 }
 
+let logInterval;
+
 async function performUpdate(isReinstall = false) {
     const action = isReinstall ? 'reinstall the current version' : 'perform a remote update';
     if (!confirm(`Are you sure you want to ${action}? The system will be offline during installation.`)) return;
     
-    // Show loading state in notification if it exists
-    const banner = document.querySelector('.update-content');
-    if (banner) {
-        banner.innerHTML = '<span class="update-icon">⌛</span> <span class="update-message">Installation started... The system will reboot shortly.</span>';
-    }
+    // Show terminal modal
+    document.getElementById('terminal-modal').style.display = 'flex';
+    document.getElementById('terminal-output').innerText = 'Initializing update...';
     
-    if (isReinstall) alert('Reinstallation started. Please wait for the system to reboot.');
-
     try {
         await fetch('/api/perform-update', { method: 'POST' });
+        // Start polling logs
+        logInterval = setInterval(pollUpdateLog, 1000);
     } catch (e) {
         console.error('Update trigger failed:', e);
+        document.getElementById('terminal-output').innerText = 'Error: Failed to start update.';
     }
+}
+
+async function pollUpdateLog() {
+    try {
+        const response = await fetch('/api/update-log');
+        const data = await response.json();
+        
+        if (data.log) {
+            const output = document.getElementById('terminal-output');
+            output.innerText = data.log;
+            output.scrollTop = output.scrollHeight; // Auto scroll
+        }
+        
+        if (data.log.includes('Rebooting in 5 seconds')) {
+            clearInterval(logInterval);
+            setTimeout(() => {
+                document.getElementById('terminal-output').innerText += '\n\nLost connection to server (System is rebooting).';
+            }, 5000);
+        }
+    } catch (e) {
+        // Connection will eventually fail when server reboots
+        console.log('Poller lost connection (Expected during reboot)');
+    }
+}
+
+function closeTerminal() {
+    document.getElementById('terminal-modal').style.display = 'none';
+    if (logInterval) clearInterval(logInterval);
 }
 
 function closeUpdateNotification() {

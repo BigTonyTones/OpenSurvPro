@@ -185,17 +185,34 @@ def check_update():
     
     return jsonify({"update_available": False, "error": "Could not reach update server"})
 
+@app.route('/api/update-log')
+def get_update_log():
+    try:
+        if os.path.exists('/tmp/opensurv_update.log'):
+            with open('/tmp/opensurv_update.log', 'r') as f:
+                # Return the last 50 lines to keep it snappy
+                lines = f.readlines()
+                return jsonify({"status": "success", "log": "".join(lines[-50:])})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+    return jsonify({"status": "success", "log": "Waiting for installer to start..."})
+
 @app.route('/api/perform-update', methods=['POST'])
 def perform_update():
     try:
         logger.info("Remote update requested. Starting update script in background...")
-        # Start the update process in a detached background process so it can kill this one
-        update_cmd = "cd /home/tony/OpenSurvPro && git pull && sudo ./install.sh --auto"
+        # Clear old log
+        with open('/tmp/opensurv_update.log', 'w') as f:
+            f.write("Starting Tonys OpenSurv Pro Update...\n")
+        
+        # Start the update process in a detached background process
+        # We tell the installer NOT to kill this process by passing --no-kill-server
+        update_cmd = "cd /home/tony/OpenSurvPro && git pull && sudo ./install.sh --auto --no-kill-server"
         subprocess.Popen(['/bin/bash', '-c', update_cmd], 
                         stdout=open('/tmp/opensurv_update.log', 'a'),
                         stderr=subprocess.STDOUT,
                         start_new_session=True)
-        return jsonify({"status": "success", "message": "Update started. The system will reboot shortly."})
+        return jsonify({"status": "success", "message": "Update started."})
     except Exception as e:
         logger.error(f"Failed to start update: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500

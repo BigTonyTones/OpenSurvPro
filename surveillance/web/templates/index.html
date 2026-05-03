@@ -16,6 +16,17 @@
             <button onclick="closeUpdateNotification()" class="close-update-btn">✕</button>
         </div>
     </div>
+
+    <!-- Terminal Modal -->
+    <div id="terminal-modal" class="modal" style="display: none;">
+        <div class="modal-content terminal-window">
+            <div class="terminal-header">
+                <span>Installation Log</span>
+                <button onclick="closeTerminal()" class="close-terminal-btn">✕</button>
+            </div>
+            <pre id="terminal-output" class="terminal-body">Waiting for update to start...</pre>
+        </div>
+    </div>
     <div class="dashboard">
         <header>
             <h1>Tonys OpenSurv <span style="color: var(--accent-color)">PRO</span></h1>

@@ -60,13 +60,15 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.2"
+fullversion_for_installer="Tonys OpenSurv Pro v2.1.3"
 
-# Check for auto flag
+# Check for flags
 AUTO_INSTALL=false
-if [[ "$*" == *"--auto"* ]]; then
-    AUTO_INSTALL=true
-fi
+KILL_SERVER=true
+for arg in "$@"; do
+    if [ "$arg" == "--auto" ]; then AUTO_INSTALL=true; fi
+    if [ "$arg" == "--no-kill-server" ]; then KILL_SERVER=false; fi
+done
 
 if [ "$AUTO_INSTALL" = false ]; then
     echo "Use this installer on your own risk. Make sure this host does not contain important data and is replacable"
@@ -80,9 +82,13 @@ if [ "$AUTO_INSTALL" = false ]; then
 fi
 
 # Stop OpenSurv after user confirms they want to proceed
-echo "Stopping OpenSurv and LightDM..."
+echo "Stopping Display Services..."
 systemctl stop lightdm
-pkill -f surveillance.py 2>/dev/null
+
+if [ "$KILL_SERVER" = true ]; then
+    echo "Stopping Surveillance Server..."
+    pkill -f surveillance.py 2>/dev/null
+fi
 
 #Install needed packages
 apt update
