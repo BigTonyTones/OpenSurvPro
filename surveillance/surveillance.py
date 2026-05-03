@@ -215,9 +215,14 @@ def perform_update():
         with open('/tmp/opensurv_update.log', 'w') as f:
             f.write("Starting Tonys OpenSurv Pro Update...\n")
         
-        # Start the update process in a detached background process
-        # We tell the installer NOT to kill this process by passing --no-kill-server
-        update_cmd = "cd /home/tony/OpenSurvPro && git pull && sudo ./install.sh --auto --no-kill-server"
+        # Determine if we need sudo (not needed if already root)
+        sudo_prefix = "sudo " if os.geteuid() != 0 else ""
+        
+        # Hard reset git to ensure we get the latest even if there are local changes
+        # Use the actual path to the project
+        project_path = os.path.abspath(os.path.join(BASE_DIR, '..'))
+        update_cmd = f"cd {project_path} && git fetch --all && git reset --hard origin/main && {sudo_prefix}./install.sh --auto --no-kill-server"
+        
         subprocess.Popen(['/bin/bash', '-c', update_cmd], 
                         stdout=open('/tmp/opensurv_update.log', 'a'),
                         stderr=subprocess.STDOUT,

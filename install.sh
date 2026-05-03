@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.3"
+fullversion_for_installer="Tonys OpenSurv Pro v2.1.4"
 
 # Check for flags
 AUTO_INSTALL=false
@@ -99,6 +99,8 @@ pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt"
 
 #Configure user and autologin
 useradd -m opensurv -s /bin/bash
+echo "opensurv ALL=(ALL) NOPASSWD: $BASEPATH/install.sh" > /etc/sudoers.d/opensurv
+chmod 0440 /etc/sudoers.d/opensurv
 configure_lightdm
 
 DESTPATH="/home/opensurv"
