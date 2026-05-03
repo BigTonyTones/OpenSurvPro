@@ -64,7 +64,7 @@ apt update
 apt install --only-upgrade xdotool mpv xfce4 python3-pygame python3-xlib ffmpeg wmctrl unclutter python3-pip -y || apt install xdotool mpv xfce4 python3-pygame python3-xlib ffmpeg wmctrl unclutter python3-pip -y
 
 #Install python dependencies
-pip3 install --upgrade -r "$BASEPATH/requirements.txt"
+pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt"
 
 #Configure user and autologin
 useradd -m opensurv -s /bin/bash

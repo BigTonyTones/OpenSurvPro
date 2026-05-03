@@ -241,10 +241,14 @@ class ScreenManager:
 
     def get_status(self):
         """Returns the status of the screen manager for API reporting"""
+        active_screen_status = {}
+        if self.all_screens and self.activeindex < len(self.all_screens):
+            active_screen_status = self.all_screens[self.activeindex].get_status()
+            
         return {
             "name": self.name,
             "monitor": self.monitor,
-            "active_screen": self.all_screens[self.activeindex].get_status(),
+            "active_screen": active_screen_status,
             "disable_autorotation": self.disable_autorotation,
             "screens_count": len(self.all_screens)
         }

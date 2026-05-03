@@ -65,12 +65,23 @@ def index():
 
 @app.route('/api/status')
 def status():
-    return jsonify({
-        "status": "online",
-        "version": "2.0-PRO",
-        "monitors": monitors,
-        "screenmanagers": [sm.get_status() for sm in screenmanagers]
-    })
+    try:
+        sm_status = []
+        for sm in screenmanagers:
+            try:
+                sm_status.append(sm.get_status())
+            except Exception as e:
+                logger.error(f"API: Error getting status for {sm.name}: {e}")
+        
+        return jsonify({
+            "status": "online",
+            "version": "2.0-PRO",
+            "monitors": monitors,
+            "screenmanagers": sm_status
+        })
+    except Exception as e:
+        logger.error(f"API: Global status error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/next', methods=['POST'])
 def next_screen():
