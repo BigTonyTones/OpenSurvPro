@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.6"
+fullversion_for_installer="Tonys OpenSurv Pro v2.1.7"
 
 # Check for flags
 AUTO_INSTALL=false
@@ -81,32 +81,33 @@ if [ "$AUTO_INSTALL" = false ]; then
     read
 fi
 
-# Stop OpenSurv after user confirms they want to proceed
-echo "Stopping Display Services..."
-systemctl stop lightdm
+# --- Step 1: System Preparation ---
+echo "Step 1/7: Preparing system and stopping services..."
+systemctl stop lightdm > /dev/null 2>&1
 
 if [ "$KILL_SERVER" = true ]; then
-    echo "Stopping Surveillance Server..."
     pkill -f surveillance.py 2>/dev/null
 fi
 
-#Install needed packages
-apt update
-apt install --only-upgrade xdotool mpv xfce4 python3-pygame python3-xlib ffmpeg wmctrl unclutter python3-pip -y || apt install xdotool mpv xfce4 python3-pygame python3-xlib ffmpeg wmctrl unclutter python3-pip -y
+# --- Step 2: Dependencies ---
+echo "Step 2/7: Installing system and Python dependencies (this may take a minute)..."
+apt update > /dev/null 2>&1
+apt install --only-upgrade xdotool mpv xfce4 python3-pygame python3-xlib ffmpeg wmctrl unclutter python3-pip -y > /dev/null 2>&1 || \
+apt install xdotool mpv xfce4 python3-pygame python3-xlib ffmpeg wmctrl unclutter python3-pip -y > /dev/null 2>&1
 
-#Install python dependencies
-pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt"
+pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" > /dev/null 2>&1
 
-#Configure user and autologin
-useradd -m opensurv -s /bin/bash
+# --- Step 3: User Configuration ---
+echo "Step 3/7: Configuring user permissions and security..."
+id -u opensurv > /dev/null 2>&1 || useradd -m opensurv -s /bin/bash
 echo "opensurv ALL=(ALL) NOPASSWD: $BASEPATH/install.sh" > /etc/sudoers.d/opensurv
 chmod 0440 /etc/sudoers.d/opensurv
-configure_lightdm
+configure_lightdm > /dev/null 2>&1
 
+# --- Step 4: Filesystem Initialization ---
+echo "Step 4/7: Initializing filesystem and performing backups..."
 DESTPATH="/home/opensurv"
-mkdir -pv "$DESTPATH"/{etc,lib,logs,bin}
-
-# Save repo path for auto-updates
+mkdir -pv "$DESTPATH"/{etc,lib,logs,bin} > /dev/null 2>&1
 echo "$BASEPATH" > "$DESTPATH/lib/.repo_path"
 
 SOURCEDIR="$BASEPATH/surveillance"
@@ -114,64 +115,52 @@ CONFDIR="etc"
 BACKUPCONFDIR=/tmp/backup_opensurv_config_$(date +%Y%m%d_%s)
 
 if [ -d "$DESTPATH/${CONFDIR}" ];then
-   echo
-   echo "Existing config dir will be backed up to "${BACKUPCONFDIR}""
-   cp -arv "$DESTPATH/${CONFDIR}" "${BACKUPCONFDIR}"
+   cp -arv "$DESTPATH/${CONFDIR}" "${BACKUPCONFDIR}" > /dev/null 2>&1
 fi
 
-ANSWERSTART="yes"
+# --- Step 5: Application Deployment ---
+echo "Step 5/7: Deploying core application files..."
+rsync -av --ignore-existing "$SOURCEDIR/images/" "$DESTPATH/lib/images/" > /dev/null 2>&1
+rsync -av --ignore-existing "$SOURCEDIR/etc/" "$DESTPATH/etc/" > /dev/null 2>&1
+rsync -av "$SOURCEDIR/core" "$DESTPATH/lib/" > /dev/null 2>&1
+rsync -av "$SOURCEDIR/web" "$DESTPATH/lib/" > /dev/null 2>&1
+rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/" > /dev/null 2>&1
+rsync -av "$BASEPATH/version.txt" "$DESTPATH/lib/" > /dev/null 2>&1
+rsync -av opensurv "$DESTPATH/bin/" > /dev/null 2>&1
+rsync -av opensurv.desktop "/usr/share/xsessions/" > /dev/null 2>&1
 
-# Install essential files (ignoring existing ones to protect user data)
-rsync -av --ignore-existing "$SOURCEDIR/images/" "$DESTPATH/lib/images/"
-rsync -av --ignore-existing "$SOURCEDIR/etc/" "$DESTPATH/etc/"
-
-# Always update core logic
-rsync -av "$SOURCEDIR/core" "$DESTPATH/lib/"
-rsync -av "$SOURCEDIR/web" "$DESTPATH/lib/"
-rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/"
-rsync -av "$BASEPATH/version.txt" "$DESTPATH/lib/"
-rsync -av opensurv "$DESTPATH/bin/"
-rsync -av opensurv.desktop "/usr/share/xsessions/"
-
-# Install Tonys OpenSurv Gui Editor
-echo "Installing Tonys OpenSurv Gui Editor..."
+# --- Step 6: GUI Editor ---
+echo "Step 6/7: Installing/Updating Tonys OpenSurv Gui Editor..."
 GUI_DEST="/home/opensurv/lib/Tonys-OpenSurv-Gui-Editor"
 git config --global --add safe.directory "$GUI_DEST"
 
 if [ ! -d "$GUI_DEST" ]; then
-    git clone https://github.com/BigTonyTones/Tonys-OpenSurv-Gui-Editor.git "$GUI_DEST"
+    git clone https://github.com/BigTonyTones/Tonys-OpenSurv-Gui-Editor.git "$GUI_DEST" > /dev/null 2>&1
 else
-    cd "$GUI_DEST" && git pull
+    cd "$GUI_DEST" && git pull > /dev/null 2>&1
 fi
 
-# We skip installing requirements.txt for the GUI Editor because it may downgrade 
-# Pro dependencies. Pro requirements.txt already covers everything needed.
-echo "Syncing dependencies..."
-pip install --break-system-packages -r "$BASEPATH/requirements.txt"
+# --- Step 7: Finalizing ---
+echo "Step 7/7: Finalizing permissions and starting services..."
+chown -Rc opensurv:opensurv /home/opensurv > /dev/null 2>&1
 
-chown -Rc opensurv:opensurv /home/opensurv
-
-#Link config file dir into /etc as convenient way to edit
 if [ ! -L /etc/opensurv ]; then
-  ln -fsv "$DESTPATH/$CONFDIR" /etc/opensurv
+  ln -fsv "$DESTPATH/$CONFDIR" /etc/opensurv > /dev/null 2>&1
 fi
 
 if [ ! -f /home/opensurv/firstinstall_DONE ];then
-  #We use lightdm, do not let gdm3 be in our way
-  apt remove gdm3
+  apt remove gdm3 -y > /dev/null 2>&1
   touch /home/opensurv/firstinstall_DONE
-  echo "This is first install we need to reboot"
+  echo "First installation complete. System reboot required."
   if [ "$AUTO_INSTALL" = false ]; then
-      echo "For reboot press <Enter>"
+      echo "Press <Enter> to reboot..."
       read
   fi
   reboot
 fi
 
-if [ x"$ANSWERSTART" == x"yes" ]; then
-    systemctl daemon-reload
-    systemctl restart lightdm
-fi
+systemctl daemon-reload
+systemctl restart lightdm
 
 # Get IP Address for the summary
 IP_ADDR=$(hostname -I | awk '{print $1}')
