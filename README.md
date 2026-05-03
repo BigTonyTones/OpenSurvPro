@@ -4,6 +4,8 @@ OpenSurv PRO is a major modernization of the original OpenSurv project, designed
 
 OpenSurv PRO focuses on **Premium Aesthetics**, **Remote Management**, and **Low-Latency Performance**.
 
+![OpenSurv PRO Dashboard Preview](assets/dashboard_preview.png)
+
 ---
 
 ## New PRO Features
@@ -14,6 +16,8 @@ Control your entire surveillance station remotely from any device on your networ
 - **Remote Control**: Switch screens, pause/resume rotation, restart services, or reboot the host machine with a single click.
 - **System Telemetry**: Live spec monitoring including OS version, Raspberry Pi hardware model, CPU/Memory usage, and Uptime.
 - **Tonys OpenSurv Gui Editor**: Now included by default! A powerful drag-and-drop YAML editor to easily manage your camera layouts and configs.
+  
+  ![GUI Editor Preview](https://raw.githubusercontent.com/BigTonyTones/Tonys-OpenSurv-Gui-Editor/main/assets/preview_layout_example.png)
 - **Integrated Manager**: Quick link access to the GUI Editor and system management at the top of the dashboard.
 - **Access**: Available by default at `http://<your-device-ip>:5000` (Dashboard) and `http://<your-device-ip>:6453` (GUI Editor).
 
