@@ -1,134 +1,95 @@
-# OpenSurv PRO - Open Source Surveillance 2.0
+# OpenSurv PRO - Advanced Open Source Surveillance 2.0
 
-## What is OpenSurv PRO?
+OpenSurv PRO is a major modernization of the original OpenSurv project, designed to transform your Raspberry Pi or compatible Linux device into a professional-grade, high-performance surveillance station. 
 
-OpenSurv PRO is a major modernization of the original OpenSurv. It transforms your [compatible device](#Hardware-list) into a dedicated, premium monitoring station with a modern web interface and high-fidelity visuals.
+OpenSurv PRO focuses on **Premium Aesthetics**, **Remote Management**, and **Low-Latency Performance**.
 
-## New PRO Features
-- **Modern Web Dashboard**: Control your surveillance station remotely from any device. Switch screens, monitor stream health, and view logs via a beautiful glassmorphism-styled web UI.
-- **Premium Aesthetics**: High-fidelity gradient backgrounds, smooth transitions, and glassmorphism UI elements for a state-of-the-art look.
-- **REST API**: Integrate OpenSurv into your smart home or automation system with the new built-in API.
-- **Improved Performance**: Optimized stream monitoring and modernized Python 3.10+ codebase.
+---
 
-## Standard Features
-##### Self-healing and health monitoring including watchdogs
-- Every stream is monitored by an external watchdog. If a stream fails, the watchdog automatically restarts it.
-- Auto-repositioning: If a camera goes offline, the layout automatically recalculates to fill the space.
+## 🚀 New PRO Features
 
-##### Automatically position streams (no manual coordinates calculation needed)
-- Auto-calculate coordinates for every stream monitored.
-- If you are not happy with the autocalculations, you [can](examples/force_coordinates_example.md) customize them yourself. 
+### 💻 Modern Web Dashboard
+Control your entire surveillance station remotely from any device on your network (Desktop, Tablet, or Mobile).
+- **Live Status**: Real-time monitoring of all active streams, monitors, and screens.
+- **Remote Control**: Switch screens, pause/resume rotation, restart services, or reboot the host machine with a single click.
+- **System Telemetry**: Live spec monitoring including OS version, Raspberry Pi hardware model, CPU/Memory usage, and Uptime.
+- **Integrated Manager**: Quick link access to the "Tonys Opensurv Manager" at the top of the dashboard.
+- **Access**: Available by default at `http://<your-device-ip>:5000`.
 
-##### Rotation of screens (autorotate or with keyboard control)
-- You can configure multiple screens and cycle between them in an automated way or via the keyboard. 
-- In the case of dual monitors, you can configure multiple screens to be cycled between for each monitor.
+### ✨ Premium Aesthetics
+The entire visual engine has been overhauled for a state-of-the-art look:
+- **Deep-Space Gradients**: Replaced solid black backgrounds with dynamic vertical gradients.
+- **Glassmorphism UI**: High-fidelity UI elements with alpha-transparency, subtle borders, and modern typography.
+- **Smooth Transitions**: Refined screen switching and status overlays.
 
-##### Multiple types of streams
-- You can also specify "image streams" to monitor images next to or instead of camera streams. The images will be auto-updated if they change remotely.
+### ⚡ Low-Latency Performance
+Specifically optimized for high-density monitoring on low-power hardware like the Raspberry Pi:
+- **Parallel Startup**: All camera streams launch simultaneously, reducing startup delay from 20+ seconds to just ~3 seconds.
+- **Multi-Threaded Probing**: Connectivity checks are performed in parallel, eliminating linear bottlenecks.
+- **Optimized Playback**: Pre-configured with low-latency `mpv` profiles, zero-caching, and hardware-accelerated decoding paths.
 
-##### Dual monitor support
-- OpenSurv will auto-detect if a second monitor is connected at boot and will automatically start the configured screens for the second monitor.
+---
 
-##### Vertical monitor support
-- To display a screen vertically, set `rotate90: True` for that screen.
+## 🛠️ Standard Features
 
-## How to get started
-In short: The idea is to connect your [compatible device](#Hardware-list) to a monitor and tell OpenSurv which stream(s) and screen(s) it should monitor or cycle between. OpenSurv will auto-calculate all the rest.
-- Get a monitor or a TV (or 2)
-- Get a [compatible device](#Hardware-list) dedicated for OpenSurv
-- Install a verified [operating system](#Hardware-list) on the device
-- On the freshly installed operating system, log in as a user and git clone this repository: 
-  - `git clone https://github.com/OpenSurv/OpenSurv`
-- Move into the folder `cd OpenSurv`
-- OPTIONAL: checkout a specific branch, for example `git checkout v1_latest`, if you want to override the default version
-- Run `sudo ./install.sh` ( this works locally as well as over an ssh session )
-- Enjoy the demo showcase
+- **Self-Healing Watchdogs**: Every stream is monitored. If a feed drops, the watchdog automatically restarts it.
+- **Auto-Layout**: Coordinates are automatically calculated for any number of streams to perfectly fill your monitor.
+- **Autorotation**: Configure multiple screens to cycle automatically or switch them manually via the dashboard or keyboard.
+- **Multi-Monitor Support**: Auto-detects dual monitors at boot and manages them independently.
+- **Vertical Support**: Easily rotate individual screens 90 degrees for portrait monitors.
 
-## Configuration
+---
 
-OpenSurv has the following config files
-- `/etc/opensurv/general.yml` => General config, mostly not needed to touch this.
-- `/etc/opensurv/monitor1.yml`  => Define screens and streams used for the first monitor.
-- `/etc/opensurv/monitor2.yml`  => Define screens and streams used for the second monitor.
-Which monitor will be monitor1 or monitor2 depends on which port you plug it into.   
-If you only plug in one monitor, then only one of the config files will be read (monitor1.yml or monitor2.yml).
+## 📦 Getting Started
 
-A screen consists of multiple streams.
-On a monitor, you can define multiple screens which can be cycled between.
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/BigTonyTones/OpenSurvPro.git
+    cd OpenSurvPro
+    ```
+2.  **Install**:
+    ```bash
+    sudo ./install.sh
+    ```
+    *The installer now features smart `y/n` prompts, automatic dependency handling for Raspberry Pi OS (Bookworm), and automated service management.*
 
-For full config explanation with all possible options, consult the config files in /etc/opensurv after install.
+3.  **Access the Dashboard**:
+    Open your browser to `http://<device-ip>:5000` to begin managing your station.
 
-## URL sources
+---
 
-#### file://
-This is a path on disk; by default, a video file is expected. This video file will then be played in an endless loop.
-If used with imageurl: true, then an image file is expected. If the image changes on disk, then OpenSurv will also reload the stream with the new image.
+## ⚙️ Configuration
 
-TIP: If an external program rotates the images on disk, then OpenSurv can thus be used as a frontend for a digital picture frame.
+Configuration is managed via YAML files in `/etc/opensurv/`:
+- **`general.yml`**: System-wide settings and API configuration.
+- **`monitor1.yml`**: Define screens and camera streams for the primary monitor.
+- **`monitor2.yml`**: Settings for the secondary monitor (if connected).
 
-#### http:// and https://
-This is a remote location with a video file or video stream.
-If used with imageurl: true, then an image file is expected. If the remote image changes, then OpenSurv will also reload the stream with the new image.
+---
 
-TIP: This can be used as part of a digital signage setup: several OpenSurv clients can be steered centrally by changing the image(s) at the central location.
-OpenSurv will autodetect interruptions and try to restore the stream.
-#### rtsp:// and rtmp://
-This is a remote location with a video stream. OpenSurv will do its best to monitor the stream, it will autodetect interruptions and try to restore the stream.
+## ⌨️ Operation & Controls
 
-## How to update OpenSurv to new version <a name="how-to-update"></a>
-- `cd OpenSurv; git pull`
-- OPTIONAL: checkout a specific branch, for example `git checkout v1_latest`, if you want to override the default version
-- Run `sudo ./install.sh` (The installer will ask if you want to preserve your current config file)
-- `systemctl restart lightdm.service`
+### Web Interface
+- Access `http://<device-ip>:5000` for full remote control.
 
-## Release notes
+### Keyboard Shortcuts
+- **`n` / `Space`**: Force next screen.
+- **`p`**: Pause/Resume autorotation.
+- **`q`**: Stop OpenSurv.
+- **`F1` - `F12`**: Switch directly to a specific screen index.
 
-See [RELEASE_NOTES](https://github.com/OpenSurv/OpenSurv/releases)
+---
 
-## Placeholder images
-After installation, you may change the placeholder images to something you like.
-- /home/opensurv/lib/images/connecting.png is shown when a camera stream is starting up.
-- /home/opensurv/lib/images/placeholder.png is shown on empty squares.
-- /home/opensurv/lib/images/noconnectable.png is shown full screen when no connectable streams are detected for the current active screen in case multiple are cycled between.
-- /home/opensurv/lib/images/loading.png is shown full screen when loading the next screen in a cycle.
-- `systemctl restart lightdm.service`
+## 🔧 Troubleshooting
 
-## OpenSurv in operation
+- **Logs**: Located at `/home/opensurv/logs/main.log`.
+- **API Status**: Check `http://<ip>:5000/api/status` for raw system health data.
+- **Manual Stop**: `sudo systemctl stop lightdm`
+- **Manual Start**: `sudo systemctl start lightdm`
 
-If you used the install.sh script, you can configure your streams in /etc/opensurv. After editing the config files, you need to restart OpenSurv (`systemctl restart lightdm.service`) for the changes to take effect.
+---
 
-If you are connected via keyboard/keypad, you can force the next screen by pressing and holding n or space (or keypad "+") for some seconds in case multiple screens were defined (this takes longer depending on the number of unconnectable streams, and they thus need to wait for timeout; keep holding until the screen changes. Note, you can change probe_timeout per camera stream if needed).
-
-Keys F1 to F12 (or keypad 0 to 9) will force the equal numbered screen to be shown onscreen (this takes longer depending on the number of unconnectable streams, and they thus need to wait for timeout; keep holding until the screen changes. Note, you can change probe_timeout per camera stream if needed).
-
-Disable rotation (as in pause rotation, as in fix the current monitored screen) dynamically during runtime by pressing "p" (or keypad "*") to pause or "r" (or "," or keypad ".") to resume/rotate. This overrides the disable_autorotation option if this has been set in the config file.
-
-In case of dual monitors, then the screens on both monitors will be controlled at the same time.
-
-
-## Troubleshooting
-
-- I advise you to test your URLs in mpv (command line) first. It should work before attempting to use them in OpenSurv.
-
-- If you used the install.sh script, logs are created at /home/opensurv/logs/. You can use them for troubleshooting. Enable DEBUG logging for very detailed output of what is going on. Switch INFO to DEBUG in /etc/opensurv/logging.yml and restart opensurv.
-
-- To enable detailed logging for a specific video stream in MPV, set `freeform_advanced_mpv_options: "--msg-level=all=warn --log-file=/dev/shm/debug_stream.log` for that stream and restart OpenSurv.  
-  Alternatively, to enable debug logging for all MPV instances, edit `/home/opensurv/.config/mpv/mpv.conf` (these logs will be written to /home/opensurv/logs/main.log). 
-
-- If you are connected via keyboard/keypad, you can stop OpenSurv by pressing and holding q (or backspace or keypad "/") (this can take some seconds).
-
-- To manage the screen without rebooting, use systemctl:
-  - `sudo systemctl stop lightdm.service` to stop the screen.
-  - `sudo systemctl start lightdm.service` to start the screen.
-  - `tail -F /home/opensurv/logs/main.log` to see last logs.
-
-- If you want to stream RTSP over TCP, please add `freeform_advanced_mpv_options: "--rtsp-transport=tcp"` to the stream configured in the config files in /etc/opensurv.
-  See in /etc/opensurv for examples.
-  If you have a "smearing" effect, this option may resolve it. 
-
-- Significantly reduce latency on a stream by adding `freeform_advanced_mpv_options:"--profile=low-latency --untimed"` to the stream configured in the config files in /etc/opensurv.
-
-## MISC
-
-- Join the community on https://github.com/OpenSurv/OpenSurv/discussions.<br/>
-- Bug tracking https://github.com/OpenSurv/OpenSurv/issues.<br/>
+## 📝 License & Community
+OpenSurv PRO is based on the original OpenSurv project and is provided as-is for the community.
+- **Discussions**: [GitHub Discussions](https://github.com/BigTonyTones/OpenSurvPro/discussions)
+- **Issues**: [GitHub Issues](https://github.com/BigTonyTones/OpenSurvPro/issues)
