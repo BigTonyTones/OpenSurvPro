@@ -289,7 +289,7 @@ class Stream:
                         {self.name} \
                         {int(self.rotate90)}'
         else:
-            # Optimized for ultra-low latency and Raspberry Pi hardware acceleration
+            # Optimized for ultra-low latency with enhanced stability for jittery networks
             self.command_line = f'/usr/bin/mpv \
                         --video-aspect-override=\'{self._get_aspect_ratio_from_coordinates()}\' \
                         --title=\'{self.name}\' \
@@ -307,12 +307,14 @@ class Stream:
                         --untimed \
                         --vd-lavc-threads=1 \
                         --vd-lavc-fast \
-                        --cache=no \
+                        --cache=yes \
+                        --demuxer-max-bytes=2M \
+                        --demuxer-max-back-bytes=1M \
                         --demuxer-readahead-secs=0 \
-                        --stream-buffer-size=4k \
+                        --stream-buffer-size=512k \
                         --rtsp-transport=tcp \
                         --hwdec=auto-safe \
-                        --network-timeout=5 \
+                        --network-timeout=10 \
                         {self.mpv_extra_options} \
                         {self._construct_audio_argument()} \
                         {self.url}'
