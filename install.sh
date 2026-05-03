@@ -159,6 +159,17 @@ if [ x"$ANSWERSTART" == x"yes" ]; then
     systemctl restart lightdm
 fi
 
+# Get IP Address for the summary
+IP_ADDR=$(hostname -I | awk '{print $1}')
+echo ""
+echo "------------------------------------------------------------"
+echo "  INSTALLATION COMPLETE"
+echo "------------------------------------------------------------"
+echo "  Web Dashboard: http://$IP_ADDR:5000"
+echo "  GUI Editor:    http://$IP_ADDR:6453"
+echo "------------------------------------------------------------"
+echo ""
+
 if [ "$AUTO_INSTALL" = true ]; then
   echo "Update complete. Rebooting in 5 seconds..."
   sleep 5
