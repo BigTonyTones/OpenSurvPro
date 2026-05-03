@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.5"
+fullversion_for_installer="Tonys OpenSurv Pro v2.1.6"
 
 # Check for flags
 AUTO_INSTALL=false
@@ -105,6 +105,9 @@ configure_lightdm
 
 DESTPATH="/home/opensurv"
 mkdir -pv "$DESTPATH"/{etc,lib,logs,bin}
+
+# Save repo path for auto-updates
+echo "$BASEPATH" > "$DESTPATH/lib/.repo_path"
 
 SOURCEDIR="$BASEPATH/surveillance"
 CONFDIR="etc"

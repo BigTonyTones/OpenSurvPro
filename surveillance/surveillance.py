@@ -219,9 +219,15 @@ def perform_update():
         # Determine if we need sudo (not needed if already root)
         sudo_prefix = "sudo " if os.geteuid() != 0 else ""
         
-        # Hard reset git to ensure we get the latest even if there are local changes
-        # Use the actual path to the project
-        project_path = os.path.abspath(os.path.join(BASE_DIR, '..'))
+        # Determine the project path (where the git repo is)
+        repo_path_file = os.path.join(BASE_DIR, '.repo_path')
+        if os.path.exists(repo_path_file):
+            with open(repo_path_file, 'r') as f:
+                project_path = f.read().strip()
+        else:
+            # Fallback to the parent of the installed lib dir
+            project_path = "/home/tony/OpenSurvPro"
+            
         update_cmd = f"cd {project_path} && git fetch --all && git reset --hard origin/main && {sudo_prefix}./install.sh --auto --no-kill-server"
         
         subprocess.Popen(['/bin/bash', '-c', update_cmd], 
