@@ -72,6 +72,19 @@
                 </div>
             </div>
 
+            <!-- Update Management -->
+            <div class="card">
+                <h2>Updates</h2>
+                <div class="version-info" style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">
+                    <div>Local: <span id="local-version-display">2.1.0</span></div>
+                    <div>Latest: <span id="latest-version-display">Checking...</span></div>
+                </div>
+                <div class="controls" style="flex-direction: column;">
+                    <button class="btn" onclick="checkForUpdates(true)" style="background: var(--accent-color)">Check for Updates</button>
+                    <button class="btn" onclick="performUpdate(true)" style="background: rgba(255,255,255,0.1); margin-top: 10px;">Reinstall Current</button>
+                </div>
+            </div>
+
             <!-- Remote Management -->
             <div class="card">
                 <h2>Management</h2>

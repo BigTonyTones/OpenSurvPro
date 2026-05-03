@@ -121,26 +121,41 @@ async function rebootHost() {
 }
 
 // Update Management
-async function checkForUpdates() {
+async function checkForUpdates(manual = false) {
+    if (manual) document.getElementById('latest-version-display').innerText = 'Checking...';
+    
     try {
         const response = await fetch('/api/check-update');
         const data = await response.json();
         
+        document.getElementById('local-version-display').innerText = data.local;
+        document.getElementById('latest-version-display').innerText = data.remote;
+
         if (data.update_available) {
             document.getElementById('remote-version-tag').textContent = `(v${data.remote})`;
             document.getElementById('update-notification').style.display = 'block';
+            if (manual) alert(`A new update is available: v${data.remote}`);
+        } else {
+            if (manual) alert('Your system is already up to date!');
         }
     } catch (e) {
         console.error('Update check failed:', e);
+        if (manual) alert('Failed to connect to the update server.');
     }
 }
 
-async function performUpdate() {
-    if (!confirm('Are you sure you want to perform a remote update? The system will be offline during installation.')) return;
+async function performUpdate(isReinstall = false) {
+    const action = isReinstall ? 'reinstall the current version' : 'perform a remote update';
+    if (!confirm(`Are you sure you want to ${action}? The system will be offline during installation.`)) return;
     
+    // Show loading state in notification if it exists
     const banner = document.querySelector('.update-content');
-    banner.innerHTML = '<span class="update-icon">⌛</span> <span class="update-message">Update started... Please wait, the system will reboot shortly.</span>';
+    if (banner) {
+        banner.innerHTML = '<span class="update-icon">⌛</span> <span class="update-message">Installation started... The system will reboot shortly.</span>';
+    }
     
+    if (isReinstall) alert('Reinstallation started. Please wait for the system to reboot.');
+
     try {
         await fetch('/api/perform-update', { method: 'POST' });
     } catch (e) {
