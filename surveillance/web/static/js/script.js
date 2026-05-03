@@ -153,9 +153,39 @@ function closeUpdateNotification() {
     document.getElementById('update-notification').style.display = 'none';
 }
 
+// Resolution OSD Toggle
+async function toggleResolutionOSD() {
+    const isChecked = document.getElementById('toggle-resolution').checked;
+    try {
+        await fetch('/api/settings/resolution', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ show_resolution: isChecked })
+        });
+        // A restart is required to apply MPV flags
+        if (confirm("Restart the OpenSurv service to apply these changes?")) {
+            restartService();
+        }
+    } catch (e) {
+        console.error('Failed to update resolution setting', e);
+    }
+}
+
+async function fetchResolutionSetting() {
+    try {
+        const response = await fetch('/api/settings/resolution');
+        const data = await response.json();
+        const toggle = document.getElementById('toggle-resolution');
+        if (toggle) toggle.checked = data.show_resolution;
+    } catch (e) {
+        console.error('Failed to fetch resolution setting', e);
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     fetchData();
     checkForUpdates();
+    fetchResolutionSetting();
     setInterval(fetchData, 2000);
 });

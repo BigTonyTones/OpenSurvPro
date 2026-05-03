@@ -84,6 +84,13 @@
             <!-- Remote Management -->
             <div class="card">
                 <h2>Management</h2>
+                <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px;">
+                    <span style="font-size: 0.9rem;">Show Stream Resolution</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-resolution" onchange="toggleResolutionOSD()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
                 <div class="controls" style="flex-direction: column;">
                     <button class="btn" onclick="restartService()" style="background: rgba(255,255,255,0.1)">Restart Service</button>
                     <button class="btn" onclick="stopService()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">Stop Service</button>

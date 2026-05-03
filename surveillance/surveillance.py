@@ -225,6 +225,22 @@ def reload_config():
     # In a real implementation, this would re-initialize everything
     return jsonify({"status": "not_implemented_yet"})
 
+@app.route('/api/settings/resolution', methods=['GET', 'POST'])
+def handle_resolution_setting():
+    filepath = '/tmp/opensurv_show_resolution'
+    if request.method == 'POST':
+        data = request.json
+        show = data.get('show_resolution', False)
+        with open(filepath, 'w') as f:
+            f.write('true' if show else 'false')
+        return jsonify({"status": "success", "show_resolution": show})
+    else:
+        show = False
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                show = f.read().strip().lower() == 'true'
+        return jsonify({"show_resolution": show})
+
 def run_web_server():
     app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
 
