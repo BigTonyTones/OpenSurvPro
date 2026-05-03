@@ -47,7 +47,7 @@ set_default_options_mpv() {
 
 if [ "$(id -u)" -ne 0 ];then echo "ABORT, run this installer as the root user (sudo ./install.sh)"; exit 2; fi
 
-echo "
+cat << 'EOF'
   __________________________________________________________________
  |                                                                  |
  |    _________                        ________                     |
@@ -58,7 +58,7 @@ echo "
  |                                           \/     \/             |
  |             T O N Y S   O P E N S U R V   P R O                  |
  |__________________________________________________________________|
-"
+EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
 
