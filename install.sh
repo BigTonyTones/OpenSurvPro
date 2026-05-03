@@ -126,7 +126,7 @@ fi
 # We skip installing requirements.txt for the GUI Editor because it may downgrade 
 # Pro dependencies. Pro requirements.txt already covers everything needed.
 echo "Syncing dependencies..."
-pip install --break-system-packages --force-reinstall Flask flask-cors PyYAML psutil pygame
+pip install --break-system-packages -r "$SOURCEDIR/requirements.txt"
 
 chown -Rc opensurv:opensurv /home/opensurv
 
