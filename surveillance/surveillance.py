@@ -219,6 +219,10 @@ def perform_update():
         # Determine if we need sudo (not needed if already root)
         sudo_prefix = "sudo " if os.geteuid() != 0 else ""
         
+        # Log diagnostic info
+        with open('/tmp/opensurv_update.log', 'a') as f:
+            f.write(f"App Directory: {BASE_DIR}\n")
+        
         # Determine the project path (where the git repo is)
         repo_path_file = os.path.join(BASE_DIR, '.repo_path')
         if os.path.exists(repo_path_file):
