@@ -238,3 +238,13 @@ class ScreenManager:
         for screen in self.all_screens:
             screen.destroy()
         self.background_drawinstance.destroy()
+
+    def get_status(self):
+        """Returns the status of the screen manager for API reporting"""
+        return {
+            "name": self.name,
+            "monitor": self.monitor,
+            "active_screen": self.all_screens[self.activeindex].get_status(),
+            "disable_autorotation": self.disable_autorotation,
+            "screens_count": len(self.all_screens)
+        }

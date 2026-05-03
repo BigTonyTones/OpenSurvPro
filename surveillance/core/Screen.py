@@ -2,6 +2,7 @@ import logging
 import math
 import time
 import collections
+from concurrent.futures import ThreadPoolExecutor
 
 from .Stream import Stream
 
@@ -77,11 +78,17 @@ class Screen:
             else:
                 self.connectable_streams = self.previous_connectable_streams
         else:
-            logger.debug("Screen: Start polling connectivity for the streams part of screen: " + self.name)
+            logger.debug("Screen: Start parallel polling connectivity for the streams part of screen: " + self.name)
             self.connectable_streams=[]
-            for stream in self.all_streams:
-                    if stream.is_connectable():
-                        self.connectable_streams.append(stream)
+            
+            # Use ThreadPoolExecutor to probe all streams in parallel
+            with ThreadPoolExecutor(max_workers=len(self.all_streams)) as executor:
+                # Map is_connectable to all streams
+                results = list(executor.map(lambda s: (s, s.is_connectable()), self.all_streams))
+                
+            for stream, is_conn in results:
+                if is_conn:
+                    self.connectable_streams.append(stream)
 
         self.streams_to_draw = self.connectable_streams
         self.streams_to_stop = self.previous_connectable_streams
@@ -237,22 +244,36 @@ class Screen:
                             placeholder_x = placeholder_x + normal_fieldwidth
 
 
-                # x1 #x coordinate upper left corner
-                # y1 #y coordinate upper left corner
-                # x2 #x coordinate absolute where window should end, count from left to right
-                # y2 #y coordinate from where window should end, count from top to bottom of screen
-                #Stop any existing stream before starting new one
-                logger.debug(f"Screen: {self.name} Stop {stream.name}")
+                # x1 #y1 #x2 #y2 coordinates
+                # Stop existing and launch new stream immediately (non-blocking)
+                logger.debug(f"Screen: {self.name} Launching {stream.name}")
                 stream.stop_stream()
-                logger.debug(f"Screen: {self.name} Starting {stream.name}" )
-                stream.start_stream([x1,y1,x2,y2], self.hidden_state,self.rotate90)
-                if not self.hidden_state:
-                    self.draw_all_placeholders()
+                stream.launch_stream([x1, y1, x2, y2], self.hidden_state, self.rotate90)
+                
                 currentwindow = currentwindow + 1
+
+            # After launching all processes, wait for their windows in a second pass
+            # This allows all mpv instances to start their initialization in parallel
+            logger.debug(f"Screen: {self.name} Waiting for all stream windows to initialize...")
+            for stream in self.streams_to_draw:
+                stream.wait_for_init()
+                
+            if not self.hidden_state:
+                self.draw_all_placeholders()
         else:
             logger.debug("Screen:" + self.name + ": Connectable camera streams stayed the same, from " + str(
                 len(self.previous_connectable_streams)) + " to " + str(
                 len(self.connectable_streams)) + ", screen: " + self.name + " does not need full redraw")
 
         self.previous_connectable_streams = self.connectable_streams
+    
+    def get_status(self):
+        """Returns the status of the screen for API reporting"""
+        return {
+            "name": self.name,
+            "duration": self.duration,
+            "run_time": self.get_active_run_time() if self.start_of_active_time != -1 else 0,
+            "streams": [s.get_status() for s in self.all_streams],
+            "hidden": self.hidden_state
+        }
 

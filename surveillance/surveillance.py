@@ -2,137 +2,175 @@
 import signal
 import sys
 import time
+import threading
+from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 import Xlib.display
 
 from core.util.config import cfg
 from core.util.setuplogging import setup_logging
 from core.ScreenManager import ScreenManager
 
-def get_monitors():
-    display = Xlib.display.Display()
-    root = display.screen().root
+# Initialize Flask App
+app = Flask(__name__, 
+            static_folder='web/static', 
+            template_folder='web/templates')
+CORS(app)
 
-    monitor_list = []
-    monitor_counter = 0
-    # Iterate over the monitors and create dictionaries
-    for m in root.xrandr_get_monitors().monitors:
-        connector = display.get_atom_name(m.name)
-        monitor_dict = {
+screenmanagers = []
+monitors = []
+
+def get_monitors():
+    try:
+        display = Xlib.display.Display()
+        root = display.screen().root
+
+        monitor_list = []
+        for i, m in enumerate(root.xrandr_get_monitors().monitors):
+            connector = display.get_atom_name(m.name)
+            monitor_dict = {
+                "xdisplay_id": ":0.0",
+                "monitor_id": connector,
+                "monitor_number": i,
+                "resolution": {
+                    "width": m.width_in_pixels,
+                    "height": m.height_in_pixels
+                },
+                "x_offset": m.x,
+                "y_offset": m.y
+            }
+            monitor_list.append(monitor_dict)
+        return monitor_list
+    except Exception as e:
+        print(f"Error detecting monitors: {e}")
+        return [{
             "xdisplay_id": ":0.0",
-            "monitor_id": connector,  # or use m.name if you want the name directly
-            "monitor_number": monitor_counter,
-            "resolution": {
-                "width": str(m.width_in_pixels),  # Convert to string as per your structure
-                "height": str(m.height_in_pixels)  # Convert to string as per your structure
-            },
-            "x_offset": str(m.x),  # Convert to string
-            "y_offset": str(m.y)  # Convert to string
-        }
-        monitor_list.append(monitor_dict)
-        monitor_counter += 1
-    logger.debug(f"MAIN: get_monitors: detected {monitor_list}")
-    return monitor_list
+            "monitor_id": "DEFAULT",
+            "monitor_number": 0,
+            "resolution": {"width": 1920, "height": 1080},
+            "x_offset": 0,
+            "y_offset": 0
+        }]
+
+# --- API Endpoints ---
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/api/status')
+def status():
+    return jsonify({
+        "status": "online",
+        "version": "2.0-PRO",
+        "monitors": monitors,
+        "screenmanagers": [sm.get_status() for sm in screenmanagers]
+    })
+
+@app.route('/api/next', methods=['POST'])
+def next_screen():
+    for sm in screenmanagers:
+        sm.rotate_next()
+    return jsonify({"status": "success"})
+
+@app.route('/api/toggle-rotation', methods=['POST'])
+def toggle_rotation():
+    for sm in screenmanagers:
+        sm.disable_autorotation = not sm.disable_autorotation
+    return jsonify({"status": "success"})
+
+@app.route('/api/reload', methods=['POST'])
+def reload_config():
+    # In a real implementation, this would re-initialize everything
+    return jsonify({"status": "not_implemented_yet"})
+
+def run_web_server():
+    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
+
+# --- Main Application Logic ---
 
 def handle_input(background_drawinstance):
     event = background_drawinstance.check_input()
-    for screenmanager in screenmanagers:
+    if event is None:
+        return
+
+    for sm in screenmanagers:
         if event == "next_event":
-            logger.debug(f"MAIN: force next screen input event detected, start rotate_next event")
-            screenmanager.rotate_next()
-            # This can do no harm, but is not really needed in this case, since the screen was already updated in cache and we merely swap it on screen as is.
-            # We do not check update_connectable_cameras this time as this is too slow for the user to wait for and we live with the fact if there is one unavailable or one became available since cache time,
-            # it is not updated until next regular update of the screen
-        if event == "end_event":
-            logger.debug(f"MAIN: quit input event detected")
-            for screenmanager in screenmanagers:
-                logger.debug(f"MAIN: instruct {screenmanager.name} to be destroyed")
-                screenmanager.destroy()
-            sys.exit(0)
-        if event == "resume_rotation":
-            logger.debug(f"MAIN: resume_rotation event detected")
-            screenmanager.disable_autorotation = False
-        if event == "pause_rotation":
-            logger.debug(f"MAIN: pause_rotation event detected")
-            screenmanager.disable_autorotation = True
-        if event in range(0, 11):
-            logger.debug(f"MAIN: force screen:{event} request detected")
-            screenmanager.force_show_screen(event)
+            sm.rotate_next()
+        elif event == "end_event":
+            cleanup_and_exit()
+        elif event == "resume_rotation":
+            sm.disable_autorotation = False
+        elif event == "pause_rotation":
+            sm.disable_autorotation = True
+        elif isinstance(event, int):
+            sm.force_show_screen(event)
 
-
-def sigterm_handler(_signo, _stack_frame):
-    for screenmanager in screenmanagers:
-        logger.debug(f"MAIN: instruct {screenmanager.name} to be destroyed")
-        screenmanager.destroy()
+def cleanup_and_exit():
+    logger.info("MAIN: Shutting down...")
+    for sm in screenmanagers:
+        sm.destroy()
     sys.exit(0)
 
+def sigterm_handler(_signo, _stack_frame):
+    cleanup_and_exit()
 
 if __name__ == '__main__':
-
-
     signal.signal(signal.SIGTERM, sigterm_handler)
+    signal.signal(signal.SIGINT, sigterm_handler)
 
-    #Setup logger
     logger = setup_logging()
+    VERSION = "2.0-PRO"
+    logger.info(f"Starting OpenSurv PRO {VERSION}")
 
-    fullversion_for_installer = "1.3"
+    # Detect monitors
+    monitors = get_monitors()
+    logger.info(f"Detected {len(monitors)} monitors")
 
-    version = fullversion_for_installer
-    logger.info("Starting opensurv " + version)
+    # Initialize ScreenManagers
+    for i, monitor in enumerate(monitors):
+        disable_pygame = (i != 0)
+        enable_caching = cfg.get('advanced', {}).get('enable_caching_next_screen', True)
+        sm = ScreenManager(f'manager_{i}', monitor, enable_caching, disable_pygame)
+        screenmanagers.append(sm)
 
-    #Read in config
-    interval_check_status=cfg['advanced']['interval_check_status'] if 'interval_check_status' in cfg["advanced"] else 19 #Override of interval_check_status if set
-    enable_caching_next_screen=cfg['advanced']['enable_caching_next_screen'] if 'enable_caching_next_screen' in cfg["advanced"] else True #Override of enable_caching_next_screen if set
+    # Bootstrap
+    for sm in screenmanagers:
+        sm.bootstrap()
 
-    #Detect displays attached and their config
-    monitors=get_monitors()
+    # Start Web Server in Background
+    web_thread = threading.Thread(target=run_web_server, daemon=True)
+    web_thread.start()
+    logger.info("Web Dashboard started at http://localhost:5000")
 
-    screenmanagers=[]
-    count=0
-    for monitor in monitors:
-        disable_pygame = True
-        # Only one screenmanager may be the master of the pygame in the case we have multiple instances. choose the first screen detected
-        if count == 0:
-            disable_pygame = False
-        screen_manager=ScreenManager(f'screen_manager_{count}', monitor, enable_caching_next_screen, disable_pygame)
-        screenmanagers.append(screen_manager)
-        count= count + 1
+    # Main Loop
+    interval_check = cfg.get('advanced', {}).get('interval_check_status', 20)
+    loop_counter = 0
 
-
-    #Bootstrap all screenmanagers
-    for screenmanager in screenmanagers:
-        logger.debug(f"MAIN {screenmanager.name}: START bootstrap")
-        screenmanager.bootstrap()
-        logger.debug(f"MAIN {screenmanager.name}: END bootstrap")
-    loop_counter=0
     while True:
         try:
             loop_counter += 1
+            
+            # Key Handling
+            if screenmanagers:
+                handle_input(screenmanagers[0].get_background_drawinstance())
 
-            #Handle keypresses
-            #Only the first screenmanager is the controller of pygame
-            handle_input(screenmanagers[0].get_background_drawinstance())
+            for sm in screenmanagers:
+                # Autorotation logic
+                if not sm.get_disable_autorotation():
+                    if sm.get_active_screen_run_time() >= sm.get_active_screen_duration():
+                        sm.rotate_next()
+                        sm.update_active_screen()
 
-            #Check if we need to rotate:
-            for screenmanager in screenmanagers:
-                if not screenmanager.get_disable_autorotation():
-                    if screenmanager.get_active_screen_run_time() >= screenmanager.get_active_screen_duration():
-                        screenmanager.rotate_next()
-                        #In case the screen in cache had disconnected or reconnectable streams, check and update it once it becomes active
-                        logger.debug(f"MAIN {screenmanager.name}: after rotate_next start update_active_screen")
-                        screenmanager.update_active_screen()
+                # Health Check / Watchdog (every interval_check seconds)
+                if loop_counter % interval_check == 0:
+                    sm.update_active_screen()
+                    sm.run_watchdogs_active_screen()
 
-                #Only update the screen/check connectable cameras and repair every interval_check_status seconds
-                if loop_counter % int(interval_check_status) == 0:
-                    # Only try to redraw the screen when disable_probing_for_all_streams option is false, but keep the loop
-                    logger.debug(f"MAIN {screenmanager.name}: regular start update_active_screen (every " + str(interval_check_status) + " seconds since start of opensurv)")
-                    screenmanager.update_active_screen()
-                    # Call the watchdogs to check and try to repair for crashed instances
-                    screenmanager.run_watchdogs_active_screen()
-
-                #Reset focus pygame for keyhandling
-                screenmanager.focus_background_pygame()
+                # Refocus for key handling
+                sm.focus_background_pygame()
 
             time.sleep(1)
         except Exception as e:
-            logger.error(f"MAIN: crash { repr(e)}")
-            exit(99)
+            logger.error(f"MAIN CRASH: {e}")
+            cleanup_and_exit()

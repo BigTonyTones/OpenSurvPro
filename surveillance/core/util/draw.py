@@ -31,31 +31,42 @@ class Draw:
         logger.debug(
             f"Draw: {self.name} draw.init finished on DISPLAY {self.xdisplay_id}")
 
-    def placeholder(self,absposx,absposy,width,height,background_img_path,rotate90):
-        """This function creates a new placeholder"""
+    def placeholder(self, absposx, absposy, width, height, background_img_path, rotate90):
+        """This function creates a new placeholder with premium glassmorphism effect"""
         if self.disable_pygame:
-            logger.debug(f"Draw: {self.name} Refuse to create placeholder with coordinates: {absposx}, {absposy} and width: {width} height: {height} with image {background_img_path} since we do not have a pygame surface to draw on" )
+            logger.debug(f"Draw: {self.name} Refuse to create placeholder since pygame is disabled")
             return None
-        else:
-            logger.debug(f"Draw: {self.name} Drawing placeholder with coordinates: {absposx}, {absposy} and width: {width} height: {height} with image {background_img_path}" )
-            background_img = pygame.image.load(background_img_path)
+        
+        try:
+            background_img = pygame.image.load(background_img_path).convert_alpha()
             if rotate90:
                 background_img = pygame.transform.rotate(background_img, -90)
             background_img = pygame.transform.scale(background_img, (width, height))
+            
+            # Add a subtle border/glass effect
+            pygame.draw.rect(self.surface, (255, 255, 255, 30), (absposx, absposy, width, height), 1)
             self.surface.blit(background_img, (absposx, absposy))
             self.refresh()
             return background_img
-
+        except Exception as e:
+            logger.error(f"Draw: {self.name} Error drawing placeholder: {e}")
+            return None
 
     def blank(self):
+        """Draws a premium gradient background"""
         if self.disable_pygame:
-            logger.debug(f"Draw: {self.name} Refuse to blank screen since we do not have a pygame surface to draw on" )
-            return None
-        else:
-            logger.debug(
-                f"Draw: {self.name} draw.blank we are instructed to blank the background")
-            self.surface.fill((0, 0, 0))
-            pygame.display.flip()
+            return
+        
+        # Create a deep space gradient
+        for y in range(self.resolution_height):
+            # Calculate color based on height for a vertical gradient
+            # From #0f0c29 to #24243e
+            r = 15 + (36 - 15) * y // self.resolution_height
+            g = 12 + (36 - 12) * y // self.resolution_height
+            b = 41 + (62 - 41) * y // self.resolution_height
+            pygame.draw.line(self.surface, (r, g, b), (0, y), (self.resolution_width, y))
+            
+        pygame.display.flip()
     def check_input(self):
         if not self.disable_pygame:
             try:

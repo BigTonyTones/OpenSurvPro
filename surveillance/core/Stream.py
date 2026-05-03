@@ -261,40 +261,39 @@ class Stream:
           logger.debug(f"Stream: {self.name}: run_stream_watchdog: OK is responding ")
       else:
           logger.debug(f"Stream: {self.name}: run_stream_watchdog: was instructed to be stopped, not running watchdog")
-    def start_stream(self, coordinates, hidden, rotate90):
+    def launch_stream(self, coordinates, hidden, rotate90):
+        """Starts the mpv process without waiting for the window to appear"""
         self.rotate90 = rotate90
         if self.rotate90:
-            self.mpv_video_rotate=90
+            self.mpv_video_rotate = 90
 
         self.hidden = hidden
         if self.force_coordinates:
-            logger.debug(f"Stream: {self.name}: start_stream: uses force_coordinates { str(self.force_coordinates) } which will override pre-calculated coordinates of { str(coordinates) }")
+            logger.debug(f"Stream: {self.name}: launch_stream: uses force_coordinates {str(self.force_coordinates)}")
             self.coordinates = self.force_coordinates
         else:
-            self.coordinates=coordinates
+            self.coordinates = coordinates
 
-        logger.debug(f"Stream: {self.name}: start_stream")
-
+        logger.debug(f"Stream: {self.name}: launch_stream")
         self.show_status()
+
         if self.imageurl:
-            # Start stream
-            # We need --loop for when streaming finite video file on disk
             self.command_line = f'core/util/image_viewer.py \
-                        { self.coordinates[0] } \
-                        { self.coordinates[1] } \
-                        { self.coordinates[2] } \
-                        { self.coordinates[3] } \
+                        {self.coordinates[0]} \
+                        {self.coordinates[1]} \
+                        {self.coordinates[2]} \
+                        {self.coordinates[3]} \
                         {self.monitor_x_offset} \
                         {self.monitor_y_offset} \
                         {self.url} \
-                        {self.name } \
+                        {self.name} \
                         {int(self.rotate90)}'
-
         else:
+            # Optimized for low latency and Raspberry Pi hardware
             self.command_line = f'/usr/bin/mpv \
                         --video-aspect-override=\'{self._get_aspect_ratio_from_coordinates()}\' \
                         --title=\'{self.name}\' \
-                        { self.mpv_loop } \
+                        {self.mpv_loop} \
                         --no-border \
                         --video-rotate=\'{self.mpv_video_rotate}\' \
                         --window-minimized=yes \
@@ -304,31 +303,45 @@ class Stream:
                         --cursor-autohide=always \
                         --screen=\'{self.monitor_number}\' \
                         --geometry=\'{self._convert_to_mpv_coordinates()}\' \
+                        --profile=low-latency \
+                        --untimed \
+                        --vd-lavc-threads=1 \
+                        --cache=no \
+                        --demuxer-readahead-secs=0.1 \
                         {self.mpv_extra_options} \
                         {self._construct_audio_argument()} \
                         {self.url}'
 
-        # Split into list so subprocess can process all arguments
         self.command_line_shlex = shlex.split(self.command_line)
-        logger.debug(f"Stream: {self.name}: start_stream: with commandline {str(self.command_line_shlex)}")
+        logger.debug(f"Stream: {self.name}: launch_stream: {str(self.command_line_shlex)}")
+        
         self.env_with_display = os.environ.copy()
         self.env_with_display['DISPLAY'] = str(self.xdisplay_id)
-        self.streamprocess = subprocess.Popen(self.command_line_shlex, preexec_fn=os.setsid, stdin=subprocess.PIPE,env=self.env_with_display)
+        self.streamprocess = subprocess.Popen(self.command_line_shlex, preexec_fn=os.setsid, stdin=subprocess.PIPE, env=self.env_with_display)
+        self.stream_started = True
+
+    def wait_for_init(self):
+        """Waits for the window to be initialized after launching"""
+        if not self.stream_started:
+            return
 
         self._wait_for_window_to_be_initialized()
 
-
         if self.showontop and not self.hidden:
-            logger.debug(f"Stream: {self.name}: start_stream on top of the other streams")
+            logger.debug(f"Stream: {self.name}: showing on top")
             self._show_on_top()
 
         if not self.hidden:
-            logger.debug(f"Stream: {self.name}: start_stream and showing on screen")
+            logger.debug(f"Stream: {self.name}: unhiding")
             self.unhide()
         else:
-            logger.debug(f"Stream: {self.name}: start_stream and NOT showing on screen")
+            logger.debug(f"Stream: {self.name}: hiding")
             self.hide()
-        self.stream_started = True
+
+    def start_stream(self, coordinates, hidden, rotate90):
+        """Legacy synchronous start method"""
+        self.launch_stream(coordinates, hidden, rotate90)
+        self.wait_for_init()
 
     def restart_stream(self):
         self.stop_stream()
@@ -347,3 +360,13 @@ class Stream:
             pass
           self.streamprocess.wait()
         self.stream_started= False
+
+    def get_status(self):
+        """Returns the status of the stream for API reporting"""
+        return {
+            "name": self.name,
+            "url": self.obfuscated_credentials_url,
+            "online": self.stream_started,
+            "is_image": self.imageurl,
+            "hidden": getattr(self, 'hidden', False)
+        }

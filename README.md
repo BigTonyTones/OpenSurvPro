@@ -1,23 +1,21 @@
-# OpenSurv - Open Source Surveillance (<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QPJU9K2KZ8D94" target="_blank" rel="nofollow"><img src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" alt="" /></a>)
+# OpenSurv PRO - Open Source Surveillance 2.0
 
-## What is OpenSurv?
+## What is OpenSurv PRO?
 
-OpenSurv is a free application that transforms your [compatible device](#Hardware-list) into a dedicated device to monitor video streams or images.  
+OpenSurv PRO is a major modernization of the original OpenSurv. It transforms your [compatible device](#Hardware-list) into a dedicated, premium monitoring station with a modern web interface and high-fidelity visuals.
 
 ![Screenshot](examples/4streams.png)
 
-## Hardware list
-Explore the [hardware section of the discussion board](https://github.com/OpenSurv/OpenSurv/discussions/categories/hardware-operating-system) to discover how OpenSurv works on various hardware.
+## New PRO Features
+- **Modern Web Dashboard**: Control your surveillance station remotely from any device. Switch screens, monitor stream health, and view logs via a beautiful glassmorphism-styled web UI.
+- **Premium Aesthetics**: High-fidelity gradient backgrounds, smooth transitions, and glassmorphism UI elements for a state-of-the-art look.
+- **REST API**: Integrate OpenSurv into your smart home or automation system with the new built-in API.
+- **Improved Performance**: Optimized stream monitoring and modernized Python 3.10+ codebase.
 
-- [Compatible hardware](https://github.com/OpenSurv/OpenSurv/discussions/categories/hardware-operating-system?discussions_q=is%3Aopen+label%3ACompatible+category%3A%22Hardware+%2B+Operating+system%22)
-- [Hardware in test](https://github.com/OpenSurv/OpenSurv/discussions/categories/hardware-operating-system?discussions_q=is%3Aopen+label%3A%22Testing+phase%22+category%3A%22Hardware+%2B+Operating+system%22)
-
-
-## Features
+## Standard Features
 ##### Self-healing and health monitoring including watchdogs
-- Every stream will be monitored by an external watchdog process. If the stream gets killed somehow, the watchdog will try to restart the stream/process. This gives you a very robust surveillance screen.
-- Stream up/down detection and auto-repositioning of connectable streams on the screen layout. 
-  For example: if you stop a camera (or just stop the server on the camera), OpenSurv will detect this and will recalculate/redraw the screen with the still available streams. The same is true if a previous unconnectable stream becomes connectable. All without any user interaction.
+- Every stream is monitored by an external watchdog. If a stream fails, the watchdog automatically restarts it.
+- Auto-repositioning: If a camera goes offline, the layout automatically recalculates to fill the space.
 
 ##### Automatically position streams (no manual coordinates calculation needed)
 - Auto-calculate coordinates for every stream monitored.
