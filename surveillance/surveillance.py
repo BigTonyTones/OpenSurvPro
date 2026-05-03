@@ -175,10 +175,20 @@ def check_update():
         response = requests.get(repo_url, timeout=5)
         if response.status_code == 200:
             remote_version = response.text.strip()
+            
+            # Proper semantic version comparison (only update if remote > local)
+            def version_to_tuple(v):
+                try:
+                    return tuple(map(int, (v.split('.'))))
+                except:
+                    return (0, 0, 0)
+            
+            update_available = version_to_tuple(remote_version) > version_to_tuple(local_version)
+            
             return jsonify({
                 "local": local_version,
                 "remote": remote_version,
-                "update_available": local_version != remote_version
+                "update_available": update_available
             })
     except Exception as e:
         logger.error(f"Error checking for updates: {e}")
