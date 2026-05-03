@@ -11,22 +11,16 @@
     <div id="update-notification" class="update-banner" style="display: none;">
         <div class="update-content">
             <span class="update-icon">⚡</span>
-            <span class="update-message">A new update is available! <span id="remote-version-tag"></span></span>
-            <button onclick="performUpdate()" class="update-btn">Update Now</button>
+            <div class="update-message">
+                New Update Available <span id="remote-version-tag"></span>! 
+                <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.9; font-family: monospace; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 4px;">
+                    Terminal: sudo ./install.sh --update
+                </div>
+            </div>
             <button onclick="closeUpdateNotification()" class="close-update-btn">✕</button>
         </div>
     </div>
 
-    <!-- Terminal Modal -->
-    <div id="terminal-modal" class="modal" style="display: none;">
-        <div class="modal-content terminal-window">
-            <div class="terminal-header">
-                <span>Installation Log</span>
-                <button onclick="closeTerminal()" class="close-terminal-btn">✕</button>
-            </div>
-            <pre id="terminal-output" class="terminal-body">Waiting for update to start...</pre>
-        </div>
-    </div>
     <div class="dashboard">
         <header>
             <h1>Tonys OpenSurv <span style="color: var(--accent-color)">PRO</span></h1>
@@ -73,6 +67,9 @@
                     <div class="tech-item"><span class="tech-label">RAM</span><span id="sys-mem">--</span></div>
                     <div class="tech-item"><span class="tech-label">UP</span><span id="sys-uptime">--</span></div>
                 </div>
+                <div style="margin-top: 1rem; opacity: 0.5; font-size: 0.75rem; border-top: 1px solid var(--glass-border); padding-top: 0.5rem;">
+                    Local Version: <span id="local-version-display">2.3.3</span>
+                </div>
             </div>
 
             <!-- Streams Status -->
@@ -80,32 +77,6 @@
                 <h2>Active Streams</h2>
                 <div class="stream-list" id="stream-list">
                     <p>No active streams detected.</p>
-                </div>
-            </div>
-
-            <!-- Network Management -->
-            <div class="card">
-                <h2>Network</h2>
-                <div class="network-info" style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">
-                    <div>IP: <span id="current-ip-display">Loading...</span></div>
-                    <div>WiFi: <span id="wifi-ssid-display">Checking...</span></div>
-                </div>
-                <div class="controls" style="flex-direction: column;">
-                    <button class="btn" onclick="openWifiModal()" style="background: rgba(255,255,255,0.1)">Configure WiFi</button>
-                    <button class="btn" onclick="openStaticIpModal()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">Static IP Settings</button>
-                </div>
-            </div>
-
-            <!-- Update Management -->
-            <div class="card">
-                <h2>Updates</h2>
-                <div class="version-info" style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">
-                    <div>Local: <span id="local-version-display">2.1.0</span></div>
-                    <div>Latest: <span id="latest-version-display">Checking...</span></div>
-                </div>
-                <div class="controls" style="flex-direction: column;">
-                    <button class="btn" onclick="checkForUpdates(true)" style="background: var(--accent-color)">Check for Updates</button>
-                    <button class="btn" onclick="performUpdate(true)" style="background: rgba(255,255,255,0.1); margin-top: 10px;">Reinstall Current</button>
                 </div>
             </div>
 
@@ -123,54 +94,6 @@
         <footer>
             OpenSurv Pro &bull; Advanced Surveillance Dashboard &bull; 2026
         </footer>
-    </div>
-
-    <!-- WiFi Modal -->
-    <div id="wifi-modal" class="modal">
-        <div class="modal-content glass">
-            <div class="modal-header">
-                <h2>WiFi Configuration</h2>
-                <span class="close" onclick="closeWifiModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label>Available Networks</label>
-                    <select id="wifi-ssid-select" class="form-control">
-                        <option value="">Scanning...</option>
-                    </select>
-                </div>
-                <div class="input-group" style="margin-top: 15px;">
-                    <label>Password</label>
-                    <input type="password" id="wifi-password" class="form-control" placeholder="Enter password">
-                </div>
-                <button class="btn btn-primary" onclick="applyWifi()" style="margin-top: 20px; width: 100%;">Connect</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Static IP Modal -->
-    <div id="static-ip-modal" class="modal">
-        <div class="modal-content glass">
-            <div class="modal-header">
-                <h2>Static IP Settings</h2>
-                <span class="close" onclick="closeStaticIpModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label>IP Address</label>
-                    <input type="text" id="static-ip" class="form-control" placeholder="192.168.1.100">
-                </div>
-                <div class="input-group" style="margin-top: 15px;">
-                    <label>Gateway</label>
-                    <input type="text" id="static-gateway" class="form-control" placeholder="192.168.1.1">
-                </div>
-                <div class="input-group" style="margin-top: 15px;">
-                    <label>DNS</label>
-                    <input type="text" id="static-dns" class="form-control" value="8.8.8.8">
-                </div>
-                <button class="btn btn-primary" onclick="applyStaticIp()" style="margin-top: 20px; width: 100%;">Apply Settings</button>
-            </div>
-        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
