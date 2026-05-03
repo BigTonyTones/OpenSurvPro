@@ -225,16 +225,6 @@ class Stream:
         if not self.enableaudio:
             return "--no-audio"
         return ""
-        
-    def _construct_osd_arguments(self):
-        try:
-            if os.path.exists('/tmp/opensurv_show_resolution'):
-                with open('/tmp/opensurv_show_resolution', 'r') as f:
-                    if f.read().strip().lower() == 'true':
-                        return "--osd-playing-msg='Res: ${width}x${height}' --osd-duration=9999999 --osd-align-x=right --osd-align-y=top --osd-margin-x=10 --osd-margin-y=10 --osd-font-size=24 --osd-color='#A0FFFFFF' --osd-border-size=1"
-        except:
-            pass
-        return ""
 
     def _wait_for_window_to_be_initialized(self):
       """
@@ -322,7 +312,6 @@ class Stream:
                         --rtsp-transport=tcp \
                         --hwdec=auto-safe \
                         --network-timeout=10 \
-                        {self._construct_osd_arguments()} \
                         {self.mpv_extra_options} \
                         {self._construct_audio_argument()} \
                         {self.url}'
