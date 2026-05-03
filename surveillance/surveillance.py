@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 import signal
 import sys
 import time
@@ -11,10 +12,14 @@ from core.util.config import cfg
 from core.util.setuplogging import setup_logging
 from core.ScreenManager import ScreenManager
 
+# Get absolute path for the web directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+WEB_DIR = os.path.join(BASE_DIR, 'web')
+
 # Initialize Flask App
 app = Flask(__name__, 
-            static_folder='web/static', 
-            template_folder='web/templates')
+            static_folder=os.path.join(WEB_DIR, 'static'), 
+            template_folder=os.path.join(WEB_DIR, 'templates'))
 CORS(app)
 
 screenmanagers = []
