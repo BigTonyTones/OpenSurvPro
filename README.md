@@ -41,21 +41,18 @@ Specifically optimized for high-density monitoring on low-power hardware like th
 
 ---
 
+## One-Line Installation
+
+Run this command on your device to install OpenSurv PRO automatically:
+```bash
+git clone https://github.com/BigTonyTones/OpenSurvPro.git && cd OpenSurvPro && sudo ./install.sh
+```
+
 ## Getting Started
 
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/BigTonyTones/OpenSurvPro.git
-    cd OpenSurvPro
-    ```
-2.  **Install**:
-    ```bash
-    sudo ./install.sh
-    ```
-    *The installer now features smart `y/n` prompts, automatic dependency handling for Raspberry Pi OS (Bookworm), and automated service management.*
-
-3.  **Access the Dashboard**:
-    Open your browser to `http://<device-ip>:5000` to begin managing your station.
+1.  **Preparation**: Ensure your device is connected to a monitor and has an active internet connection.
+2.  **Run the One-Liner**: Execute the command above in your terminal.
+3.  **Access the Dashboard**: Once installed, open your browser to `http://<device-ip>:5000`.
 
 ---
 
