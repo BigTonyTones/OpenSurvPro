@@ -166,7 +166,8 @@ def reboot_host():
 def check_update():
     try:
         # Load local version
-        with open(os.path.join(BASE_DIR, '..', 'version.txt'), 'r') as f:
+        version_path = os.path.join(BASE_DIR, 'version.txt')
+        with open(version_path, 'r') as f:
             local_version = f.read().strip()
         
         # Check GitHub for latest version
