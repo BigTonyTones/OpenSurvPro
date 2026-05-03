@@ -104,16 +104,18 @@ rsync -av opensurv.desktop "/usr/share/xsessions/"
 # Install Tonys OpenSurv Gui Editor
 echo "Installing Tonys OpenSurv Gui Editor..."
 GUI_DEST="/home/opensurv/lib/Tonys-OpenSurv-Gui-Editor"
+git config --global --add safe.directory "$GUI_DEST"
+
 if [ ! -d "$GUI_DEST" ]; then
     git clone https://github.com/BigTonyTones/Tonys-OpenSurv-Gui-Editor.git "$GUI_DEST"
 else
     cd "$GUI_DEST" && git pull
 fi
 
-# Install dependencies for the GUI Editor
-if [ -f "$GUI_DEST/requirements.txt" ]; then
-    pip install --break-system-packages -r "$GUI_DEST/requirements.txt"
-fi
+# We skip installing requirements.txt for the GUI Editor because it may downgrade 
+# Pro dependencies. Pro requirements.txt already covers everything needed.
+echo "Syncing dependencies..."
+pip install --break-system-packages --force-reinstall --no-metadata-check Flask flask-cors PyYAML psutil pygame
 
 chown -Rc opensurv:opensurv /home/opensurv
 
