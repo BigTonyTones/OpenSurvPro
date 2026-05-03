@@ -120,6 +120,41 @@ async function rebootHost() {
     }
 }
 
-// Initial fetch and poll every 2 seconds
-fetchData();
-setInterval(fetchData, 2000);
+// Update Management
+async function checkForUpdates() {
+    try {
+        const response = await fetch('/api/check-update');
+        const data = await response.json();
+        
+        if (data.update_available) {
+            document.getElementById('remote-version-tag').textContent = `(v${data.remote})`;
+            document.getElementById('update-notification').style.display = 'block';
+        }
+    } catch (e) {
+        console.error('Update check failed:', e);
+    }
+}
+
+async function performUpdate() {
+    if (!confirm('Are you sure you want to perform a remote update? The system will be offline during installation.')) return;
+    
+    const banner = document.querySelector('.update-content');
+    banner.innerHTML = '<span class="update-icon">⌛</span> <span class="update-message">Update started... Please wait, the system will reboot shortly.</span>';
+    
+    try {
+        await fetch('/api/perform-update', { method: 'POST' });
+    } catch (e) {
+        console.error('Update trigger failed:', e);
+    }
+}
+
+function closeUpdateNotification() {
+    document.getElementById('update-notification').style.display = 'none';
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    fetchData();
+    checkForUpdates();
+    setInterval(fetchData, 2000);
+});

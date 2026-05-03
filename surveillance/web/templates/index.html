@@ -8,6 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="update-notification" class="update-banner" style="display: none;">
+        <div class="update-content">
+            <span class="update-icon">⚡</span>
+            <span class="update-message">A new update is available! <span id="remote-version-tag"></span></span>
+            <button onclick="performUpdate()" class="update-btn">Update Now</button>
+            <button onclick="closeUpdateNotification()" class="close-update-btn">✕</button>
+        </div>
+    </div>
     <div class="dashboard">
         <header>
             <h1>Tonys OpenSurv <span style="color: var(--accent-color)">PRO</span></h1>

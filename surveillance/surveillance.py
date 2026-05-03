@@ -11,6 +11,8 @@ import platform
 import psutil
 import socket
 import logging
+import threading
+import requests
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 import Xlib.display
@@ -158,6 +160,44 @@ def reboot_host():
     
     threading.Thread(target=reboot).start()
     return jsonify({"status": "success", "message": "Rebooting host..."})
+
+# Remote Management APIs
+@app.route('/api/check-update')
+def check_update():
+    try:
+        # Load local version
+        with open(os.path.join(BASE_DIR, '..', 'version.txt'), 'r') as f:
+            local_version = f.read().strip()
+        
+        # Check GitHub for latest version
+        repo_url = "https://raw.githubusercontent.com/BigTonyTones/OpenSurvPro/main/version.txt"
+        response = requests.get(repo_url, timeout=5)
+        if response.status_code == 200:
+            remote_version = response.text.strip()
+            return jsonify({
+                "local": local_version,
+                "remote": remote_version,
+                "update_available": local_version != remote_version
+            })
+    except Exception as e:
+        logger.error(f"Error checking for updates: {e}")
+    
+    return jsonify({"update_available": False, "error": "Could not reach update server"})
+
+@app.route('/api/perform-update', methods=['POST'])
+def perform_update():
+    try:
+        logger.info("Remote update requested. Starting update script in background...")
+        # Start the update process in a detached background process so it can kill this one
+        update_cmd = "cd /home/tony/OpenSurvPro && git pull && sudo ./install.sh --auto"
+        subprocess.Popen(['/bin/bash', '-c', update_cmd], 
+                        stdout=open('/tmp/opensurv_update.log', 'a'),
+                        stderr=subprocess.STDOUT,
+                        start_new_session=True)
+        return jsonify({"status": "success", "message": "Update started. The system will reboot shortly."})
+    except Exception as e:
+        logger.error(f"Failed to start update: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/stop-service', methods=['POST'])
 def stop_service():
