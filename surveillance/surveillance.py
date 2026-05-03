@@ -298,10 +298,10 @@ def perform_update():
         
         # Auto-discovery if path is missing or invalid
         if not project_path or not os.path.exists(project_path):
+            # 1. Try common paths first
             possible_paths = [
                 "/home/tony/OpenSurvPro",
                 "/home/pi/OpenSurvPro",
-                "/home/opensurv/OpenSurvPro",
                 os.path.expanduser("~/OpenSurvPro")
             ]
             for p in possible_paths:
@@ -309,9 +309,21 @@ def perform_update():
                     project_path = p
                     break
             
+            # 2. Deep search if still not found
+            if not project_path or not os.path.exists(project_path):
+                try:
+                    # Look for install.sh that contains our unique version variable
+                    find_cmd = "find /home -maxdepth 4 -name 'install.sh' -exec grep -l 'fullversion_for_installer' {} + 2>/dev/null | head -n 1"
+                    discovered_file = subprocess.check_output(find_cmd, shell=True).decode().strip()
+                    if discovered_file:
+                        project_path = os.path.dirname(discovered_file)
+                except:
+                    pass
+            
         if not project_path or not os.path.exists(project_path):
              with open('/tmp/opensurv_update.log', 'a') as f:
                 f.write(f"ERROR: Could not locate OpenSurvPro project folder automatically.\n")
+                f.write(f"Deep Search completed but found no valid installer.\n")
                 f.write(f"Please run 'sudo ./install.sh' manually inside your project folder once.\n")
              return jsonify({"status": "error", "message": "Project path not found"}), 404
 
