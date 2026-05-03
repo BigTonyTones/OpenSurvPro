@@ -15,6 +15,8 @@ from core.util.config import cfg
 from core.util.setuplogging import setup_logging
 from core.ScreenManager import ScreenManager
 
+fullversion_for_installer="OpenSurv PRO v2.1.0"
+
 # Get absolute path for the web directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_DIR = os.path.join(BASE_DIR, 'web')
