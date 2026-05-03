@@ -118,6 +118,7 @@ rsync -av --ignore-existing "$SOURCEDIR/etc/" "$DESTPATH/etc/"
 rsync -av "$SOURCEDIR/core" "$DESTPATH/lib/"
 rsync -av "$SOURCEDIR/web" "$DESTPATH/lib/"
 rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/"
+rsync -av "$BASEPATH/version.txt" "$DESTPATH/lib/"
 rsync -av opensurv "$DESTPATH/bin/"
 rsync -av opensurv.desktop "/usr/share/xsessions/"
 

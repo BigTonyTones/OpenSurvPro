@@ -128,8 +128,15 @@ async function checkForUpdates(manual = false) {
         const response = await fetch('/api/check-update');
         const data = await response.json();
         
-        document.getElementById('local-version-display').innerText = data.local;
-        document.getElementById('latest-version-display').innerText = data.remote;
+        if (data.error) {
+            document.getElementById('local-version-display').innerText = 'Error';
+            document.getElementById('latest-version-display').innerText = 'N/A';
+            if (manual) alert(`Update check failed: ${data.error}`);
+            return;
+        }
+
+        document.getElementById('local-version-display').innerText = data.local || 'Unknown';
+        document.getElementById('latest-version-display').innerText = data.remote || 'Unknown';
 
         if (data.update_available) {
             document.getElementById('remote-version-tag').textContent = `(v${data.remote})`;
@@ -140,7 +147,7 @@ async function checkForUpdates(manual = false) {
         }
     } catch (e) {
         console.error('Update check failed:', e);
-        if (manual) alert('Failed to connect to the update server.');
+        if (manual) alert('Failed to connect to the local update API.');
     }
 }
 
