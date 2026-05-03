@@ -226,6 +226,18 @@ class Stream:
             return "--no-audio"
         return ""
 
+    def _get_hardware_decoding_args(self):
+        try:
+            model_paths = ["/proc/device-tree/model", "/sys/firmware/devicetree/base/model"]
+            for path in model_paths:
+                if os.path.exists(path):
+                    with open(path, "r") as f:
+                        if "raspberry pi" in f.read().lower():
+                            return "--vo=gpu --hwdec=v4l2m2m-copy"
+        except Exception:
+            pass
+        return "--hwdec=auto-safe"
+
     def _wait_for_window_to_be_initialized(self):
       """
       This functions waits until wmctrl sees the window, this is needed so following up wmctrl commands succeed"
@@ -310,8 +322,7 @@ class Stream:
                         --vd-lavc-fast \
                         --cache=no \
                         --rtsp-transport=tcp \
-                        --vo=gpu \
-                        --hwdec=v4l2m2m-copy \
+                        {self._get_hardware_decoding_args()} \
                         --network-timeout=10 \
                         {self.mpv_extra_options} \
                         {self._construct_audio_argument()} \

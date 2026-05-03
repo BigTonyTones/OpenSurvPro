@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.6.2"
+fullversion_for_installer="Tonys OpenSurv Pro v2.6.3"
 AUTO_INSTALL=false
 KILL_SERVER=true
 for arg in "$@"; do
