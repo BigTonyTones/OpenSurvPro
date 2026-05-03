@@ -4,8 +4,6 @@
 
 OpenSurv PRO is a major modernization of the original OpenSurv. It transforms your [compatible device](#Hardware-list) into a dedicated, premium monitoring station with a modern web interface and high-fidelity visuals.
 
-![Screenshot](examples/4streams.png)
-
 ## New PRO Features
 - **Modern Web Dashboard**: Control your surveillance station remotely from any device. Switch screens, monitor stream health, and view logs via a beautiful glassmorphism-styled web UI.
 - **Premium Aesthetics**: High-fidelity gradient backgrounds, smooth transitions, and glassmorphism UI elements for a state-of-the-art look.

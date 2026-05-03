@@ -81,31 +81,16 @@ if [ -d "$DESTPATH/${CONFDIR}" ];then
    echo
    echo "Existing config dir will be backed up to "${BACKUPCONFDIR}""
    cp -arv "$DESTPATH/${CONFDIR}" "${BACKUPCONFDIR}"
-
-   echo
-   USEEXAMPLECONFIG=$(ask_yes_no "Do you want to overwrite your current config files with the example config files?" "no")
-else
-   USEEXAMPLECONFIG="yes"
-fi
-
-if [ -d /home/opensurv/lib/images ];then
-   echo
-   OVERWRITESIMAGES=$(ask_yes_no "Do you want to overwrite your current images directory (/home/opensurv/lib/images) with the images from the installer?" "no")
-else
-   OVERWRITESIMAGES="yes"
 fi
 
 echo
 ANSWERSTART=$(ask_yes_no "Do you want me to (re-)start opensurv after install?" "yes")
 
-if [ x"$OVERWRITESIMAGES" == x"yes" ]; then
-  rsync -av "$SOURCEDIR/images/" "$DESTPATH/lib/images/"
-fi
-if [ x"$USEEXAMPLECONFIG" == x"yes" ]; then
-    rsync -av "$SOURCEDIR/etc/" "$DESTPATH/etc/"
-    set_default_options_mpv
-fi
-rsync -av "$SOURCEDIR/demo" "$DESTPATH/lib/"
+# Install essential files (ignoring existing ones to protect user data)
+rsync -av --ignore-existing "$SOURCEDIR/images/" "$DESTPATH/lib/images/"
+rsync -av --ignore-existing "$SOURCEDIR/etc/" "$DESTPATH/etc/"
+
+# Always update core logic
 rsync -av "$SOURCEDIR/core" "$DESTPATH/lib/"
 rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/"
 rsync -av opensurv "$DESTPATH/bin/"
