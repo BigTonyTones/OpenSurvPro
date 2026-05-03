@@ -83,8 +83,7 @@ if [ -d "$DESTPATH/${CONFDIR}" ];then
    cp -arv "$DESTPATH/${CONFDIR}" "${BACKUPCONFDIR}"
 fi
 
-echo
-ANSWERSTART=$(ask_yes_no "Do you want me to (re-)start opensurv after install?" "yes")
+ANSWERSTART="yes"
 
 # Install essential files (ignoring existing ones to protect user data)
 rsync -av --ignore-existing "$SOURCEDIR/images/" "$DESTPATH/lib/images/"
