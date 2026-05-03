@@ -5,6 +5,29 @@ if [ ! "$BASH_VERSION" ] ; then
     exit 1
 fi
 
+ask_yes_no() {
+    local prompt=$1
+    local default=$2
+    local response
+    
+    if [ "$default" = "yes" ]; then
+        prompt="$prompt [Y/n]: "
+    else
+        prompt="$prompt [y/N]: "
+    fi
+    
+    read -p "$prompt" response
+    response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
+    
+    if [ -z "$response" ]; then
+        echo "$default"
+    elif [[ "$response" =~ ^(y|yes)$ ]]; then
+        echo "yes"
+    else
+        echo "no"
+    fi
+}
+
 show_version() {
     grep fullversion_for_installer "$BASEPATH/surveillance/surveillance.py" | head -n 1 | cut -d"=" -f2
 }
@@ -60,26 +83,20 @@ if [ -d "$DESTPATH/${CONFDIR}" ];then
    cp -arv "$DESTPATH/${CONFDIR}" "${BACKUPCONFDIR}"
 
    echo
-   echo "Do you want to overwrite your current config files with the example config files?"
-   echo "Type yes/no"
-   read USEEXAMPLECONFIG
+   USEEXAMPLECONFIG=$(ask_yes_no "Do you want to overwrite your current config files with the example config files?" "no")
 else
    USEEXAMPLECONFIG="yes"
 fi
 
 if [ -d /home/opensurv/lib/images ];then
    echo
-   echo "Do you want to overwrite you current images directory (/home/opensurv/lib/images) with the images from the installer?"
-   echo "Type yes/no"
-   read OVERWRITESIMAGES
+   OVERWRITESIMAGES=$(ask_yes_no "Do you want to overwrite your current images directory (/home/opensurv/lib/images) with the images from the installer?" "no")
 else
    OVERWRITESIMAGES="yes"
 fi
 
 echo
-echo "Do you want me to (re-)start opensurv after install?"
-echo "Type yes/no"
-read ANSWERSTART
+ANSWERSTART=$(ask_yes_no "Do you want me to (re-)start opensurv after install?" "yes")
 
 if [ x"$OVERWRITESIMAGES" == x"yes" ]; then
   rsync -av "$SOURCEDIR/images/" "$DESTPATH/lib/images/"
