@@ -50,9 +50,21 @@ git clone https://github.com/BigTonyTones/OpenSurvPro.git && cd OpenSurvPro && s
 
 ## Getting Started
 
-1.  **Preparation**: Ensure your device is connected to a monitor and has an active internet connection.
-2.  **Run the One-Liner**: Execute the command above in your terminal.
-3.  **Access the Dashboard**: Once installed, open your browser to `http://<device-ip>:5000`.
+### Option 1: One-Liner (Recommended)
+Execute the command above in your terminal and follow the prompts.
+
+### Option 2: Manual Steps
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/BigTonyTones/OpenSurvPro.git
+    cd OpenSurvPro
+    ```
+2.  **Run the Installer**:
+    ```bash
+    sudo ./install.sh
+    ```
+3.  **Access the Dashboard**:
+    Open your browser to `http://<device-ip>:5000` to begin managing your station.
 
 ---
 
