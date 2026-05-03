@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.1"
+fullversion_for_installer="Tonys OpenSurv Pro v2.1.2"
 
 # Check for auto flag
 AUTO_INSTALL=false
@@ -150,8 +150,10 @@ if [ ! -f /home/opensurv/firstinstall_DONE ];then
   apt remove gdm3
   touch /home/opensurv/firstinstall_DONE
   echo "This is first install we need to reboot"
-  echo "For reboot press <Enter>"
-  read
+  if [ "$AUTO_INSTALL" = false ]; then
+      echo "For reboot press <Enter>"
+      read
+  fi
   reboot
 fi
 
