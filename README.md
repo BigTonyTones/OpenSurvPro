@@ -13,8 +13,9 @@ Control your entire surveillance station remotely from any device on your networ
 - **Live Status**: Real-time monitoring of all active streams, monitors, and screens.
 - **Remote Control**: Switch screens, pause/resume rotation, restart services, or reboot the host machine with a single click.
 - **System Telemetry**: Live spec monitoring including OS version, Raspberry Pi hardware model, CPU/Memory usage, and Uptime.
-- **Integrated Manager**: Quick link access to the "Tonys Opensurv Manager" at the top of the dashboard.
-- **Access**: Available by default at `http://<your-device-ip>:5000`.
+- **Tonys OpenSurv Gui Editor**: Now included by default! A powerful drag-and-drop YAML editor to easily manage your camera layouts and configs.
+- **Integrated Manager**: Quick link access to the GUI Editor and system management at the top of the dashboard.
+- **Access**: Available by default at `http://<your-device-ip>:5000` (Dashboard) and `http://<your-device-ip>:6453` (GUI Editor).
 
 ### ✨ Premium Aesthetics
 The entire visual engine has been overhauled for a state-of-the-art look:

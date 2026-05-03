@@ -101,6 +101,20 @@ rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/"
 rsync -av opensurv "$DESTPATH/bin/"
 rsync -av opensurv.desktop "/usr/share/xsessions/"
 
+# Install Tonys OpenSurv Gui Editor
+echo "Installing Tonys OpenSurv Gui Editor..."
+GUI_DEST="/home/opensurv/lib/Tonys-OpenSurv-Gui-Editor"
+if [ ! -d "$GUI_DEST" ]; then
+    git clone https://github.com/BigTonyTones/Tonys-OpenSurv-Gui-Editor.git "$GUI_DEST"
+else
+    cd "$GUI_DEST" && git pull
+fi
+
+# Install dependencies for the GUI Editor
+if [ -f "$GUI_DEST/requirements.txt" ]; then
+    pip install --break-system-packages -r "$GUI_DEST/requirements.txt"
+fi
+
 chown -Rc opensurv:opensurv /home/opensurv
 
 #Link config file dir into /etc as convenient way to edit
