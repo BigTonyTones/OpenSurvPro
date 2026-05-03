@@ -50,6 +50,11 @@ if [ "$(id -u)" -ne 0 ];then echo "ABORT, run this installer as the root user (s
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
 
+# Stop OpenSurv before installation
+echo "Stopping OpenSurv and LightDM..."
+systemctl stop lightdm
+pkill -f surveillance.py 2>/dev/null
+
 echo "Use this installer on your own risk. Make sure this host does not contain important data and is replacable"
 echo "This installer will configure to boot directly into Opensurv"
 echo
