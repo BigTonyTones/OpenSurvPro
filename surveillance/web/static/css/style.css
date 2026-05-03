@@ -150,8 +150,14 @@ h1 {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
+}
+
+@media (min-width: 1080px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .card {
