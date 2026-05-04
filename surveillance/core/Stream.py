@@ -303,20 +303,27 @@ class Stream:
                         {self.name} \
                         {int(self.rotate90)}'
         else:
-            # Load global default args from config
-            from core.util.config import cfg
-            global_mpv_args = cfg.get('mpv', {}).get('default_args', '--no-border --window-minimized=yes --no-input-default-bindings --no-input-builtin-bindings --no-osc --cursor-autohide=always --profile=low-latency --vd-lavc-threads=1 --vd-lavc-fast --cache=no --rtsp-transport=tcp --network-timeout=10')
-            
             # Optimized for ultra-low latency with enhanced stability for jittery networks
             self.command_line = f'/usr/bin/mpv \
                         --video-aspect-override=\'{self._get_aspect_ratio_from_coordinates()}\' \
                         --title=\'{self.name}\' \
                         {self.mpv_loop} \
+                        --no-border \
                         --video-rotate=\'{self.mpv_video_rotate}\' \
+                        --window-minimized=yes \
+                        --no-input-default-bindings \
+                        --no-input-builtin-bindings \
+                        --no-osc \
+                        --cursor-autohide=always \
                         --screen=\'{self.monitor_number}\' \
                         --geometry=\'{self._convert_to_mpv_coordinates()}\' \
-                        {global_mpv_args} \
+                        --profile=low-latency \
+                        --vd-lavc-threads=1 \
+                        --vd-lavc-fast \
+                        --cache=no \
+                        --rtsp-transport=tcp \
                         {self._get_hardware_decoding_args()} \
+                        --network-timeout=10 \
                         {self.mpv_extra_options} \
                         {self._construct_audio_argument()} \
                         {self.url}'

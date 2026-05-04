@@ -60,7 +60,7 @@ cat << 'EOF'
 EOF
 
 BASEPATH="$(cd $(dirname "${BASH_SOURCE[0]}");pwd)"
-fullversion_for_installer="Tonys OpenSurv Pro v2.6.4"
+fullversion_for_installer="Tonys OpenSurv Pro v2.6.5"
 AUTO_INSTALL=false
 KILL_SERVER=true
 for arg in "$@"; do
@@ -88,22 +88,34 @@ if [ "$KILL_SERVER" = true ]; then
 fi
 
 # --- Step 2: Dependencies ---
-echo "Step 2/7: Installing system and Python dependencies..."
-echo "  - Updating package repositories..."
-apt update > /dev/null 2>&1
+FORCE_DEPS=false
+for arg in "$@"; do
+    if [ "$arg" == "--force-deps" ]; then FORCE_DEPS=true; fi
+done
 
-echo "  - Installing core system utilities (xdotool, mpv, ffmpeg)..."
-apt install xdotool mpv ffmpeg wmctrl unclutter -y > /dev/null 2>&1
+if [ -f "/home/opensurv/.deps_installed" ] && [ "$FORCE_DEPS" = false ]; then
+    echo "Step 2/7: Dependencies already installed. Skipping... (use --force-deps to update)"
+else
+    echo "Step 2/7: Installing system and Python dependencies..."
+    echo "  - Updating package repositories..."
+    apt update > /dev/null 2>&1
 
-echo "  - Installing desktop environment (xfce4)..."
-apt install xfce4 -y > /dev/null 2>&1
+    echo "  - Installing core system utilities (xdotool, mpv, ffmpeg)..."
+    apt install xdotool mpv ffmpeg wmctrl unclutter -y > /dev/null 2>&1
 
-echo "  - Installing Python environment (python3-pygame, python3-pip)..."
-apt install python3-pygame python3-xlib python3-pip -y > /dev/null 2>&1
+    echo "  - Installing desktop environment (xfce4)..."
+    apt install xfce4 -y > /dev/null 2>&1
 
-echo "  - Installing Python library requirements from requirements.txt..."
-pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" > /dev/null 2>&1
-echo "  - Dependencies installation complete."
+    echo "  - Installing Python environment (python3-pygame, python3-pip)..."
+    apt install python3-pygame python3-xlib python3-pip -y > /dev/null 2>&1
+
+    echo "  - Installing Python library requirements from requirements.txt..."
+    pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" > /dev/null 2>&1
+    
+    # Create marker file
+    touch /home/opensurv/.deps_installed
+    echo "  - Dependencies installation complete."
+fi
 
 # --- Step 3: User Configuration ---
 echo "Step 3/7: Configuring user permissions and security..."

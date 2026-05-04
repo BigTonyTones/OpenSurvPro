@@ -413,32 +413,6 @@ h1 {
     color: var(--text-primary);
 }
 
-/* ===== MPV Editor ===== */
-.mpv-editor-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-}
-
-.mpv-textarea {
-    width: 100%;
-    min-height: 120px;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    color: var(--text-primary);
-    padding: var(--spacing-md);
-    font-family: monospace;
-    font-size: 0.9rem;
-    resize: vertical;
-    transition: all var(--transition-base);
-}
-
-.mpv-textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-}
 
 /* ===== Controls ===== */
 .controls {
