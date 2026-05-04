@@ -37,9 +37,9 @@
 
 
         <div class="grid">
-            <!-- Monitor & Screen Status -->
+            <!-- Status Card -->
             <div class="card">
-                <h2>Monitor & Screen Status</h2>
+                <h2>Status</h2>
                 <div id="monitor-list">
                     <p>Loading monitor data...</p>
                 </div>
@@ -50,6 +50,11 @@
                         <button class="btn btn-primary" onclick="nextScreen()">Next Screen</button>
                         <button class="btn" id="pause-btn" onclick="toggleRotation()">Pause</button>
                     </div>
+                </div>
+                <div class="management-controls">
+                    <button class="btn btn-sm" onclick="restartService()">Restart Service</button>
+                    <button class="btn btn-sm" onclick="stopService()">Stop Service</button>
+                    <button class="btn btn-sm btn-danger" onclick="rebootHost()">Reboot Host</button>
                 </div>
             </div>
 
@@ -78,15 +83,6 @@
                 </div>
             </div>
 
-            <!-- Remote Management -->
-            <div class="card">
-                <h2>Management</h2>
-                <div class="controls" style="flex-direction: column;">
-                    <button class="btn" onclick="restartService()">Restart Service</button>
-                    <button class="btn" onclick="stopService()" style="margin-top: 10px;">Stop Service</button>
-                    <button class="btn btn-danger" onclick="rebootHost()" style="margin-top: 10px;">Reboot Host</button>
-                </div>
-            </div>
         </div>
 
         <footer>

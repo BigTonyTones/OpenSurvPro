@@ -270,6 +270,14 @@ h1 {
     justify-content: space-between;
     font-size: 0.9rem;
 }
+.management-controls {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
 /* ===== Buttons ===== */
 .btn {
