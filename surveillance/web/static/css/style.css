@@ -94,6 +94,28 @@ header {
     gap: var(--spacing-md);
 }
 
+.external-links {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-left: 16px;
+    border-left: 1px solid var(--border-color);
+}
+
+.link-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.link-icon:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
 h1 {
     font-size: 1.75rem;
     font-weight: 800;
