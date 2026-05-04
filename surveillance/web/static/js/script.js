@@ -8,8 +8,8 @@ async function fetchData() {
         document.getElementById('system-status').innerText = 'System Offline';
         const dot = document.querySelector('.status-dot');
         if (dot) {
-            dot.style.background = '#f44336';
-            dot.style.boxShadow = '0 0 10px #f44336';
+            dot.style.background = 'var(--danger-color)';
+            dot.style.boxShadow = '0 0 10px var(--danger-color)';
         }
     }
 }

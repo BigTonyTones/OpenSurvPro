@@ -13,7 +13,7 @@
             <span class="update-icon">⚡</span>
             <div class="update-message">
                 New Update Available <span id="remote-version-tag"></span>! 
-                <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.9; font-family: monospace; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 4px;">
+                <div class="update-hint">
                     Terminal: sudo ./install.sh --update
                 </div>
             </div>
@@ -23,7 +23,9 @@
 
     <div class="dashboard">
         <header>
-            <h1>Tonys OpenSurv <span style="color: var(--accent-color)">PRO</span> <span id="header-version" style="font-size: 1rem; vertical-align: middle; margin-left: 10px; opacity: 0.5;">v2.5.0</span></h1>
+            <div class="header-left">
+                <h1>Tonys OpenSurv <span>PRO</span> <small id="header-version">v2.5.0</small></h1>
+            </div>
             <div class="status-badge">
                 <div class="status-dot pulse"></div>
                 <span id="system-status">System Online</span>
@@ -67,9 +69,9 @@
                     <div class="tech-item"><span class="tech-label">RAM</span><span id="sys-mem">--</span></div>
                     <div class="tech-item"><span class="tech-label">UP</span><span id="sys-uptime">--</span></div>
                 </div>
-                <div style="margin-top: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
                     <span style="opacity: 0.5; font-size: 0.75rem;">Local: <span id="local-version-display">2.5.0</span></span>
-                    <button class="btn btn-sm" onclick="checkForUpdates(true)" style="padding: 4px 10px; font-size: 0.7rem; background: rgba(var(--accent-color-rgb), 0.1); border-color: rgba(var(--accent-color-rgb), 0.3); color: var(--accent-color);">Check for Updates</button>
+                    <button class="btn btn-sm" onclick="checkForUpdates(true)">Check for Updates</button>
                 </div>
             </div>
 
@@ -85,8 +87,8 @@
             <div class="card">
                 <h2>Management</h2>
                 <div class="controls" style="flex-direction: column;">
-                    <button class="btn" onclick="restartService()" style="background: rgba(255,255,255,0.1)">Restart Service</button>
-                    <button class="btn" onclick="stopService()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">Stop Service</button>
+                    <button class="btn" onclick="restartService()">Restart Service</button>
+                    <button class="btn" onclick="stopService()" style="margin-top: 10px;">Stop Service</button>
                     <button class="btn btn-danger" onclick="rebootHost()" style="margin-top: 10px;">Reboot Host</button>
                 </div>
             </div>
