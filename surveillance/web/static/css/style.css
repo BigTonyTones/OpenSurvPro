@@ -88,6 +88,12 @@ header {
     backdrop-filter: blur(10px);
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
 h1 {
     font-size: 1.75rem;
     font-weight: 800;
@@ -188,10 +194,7 @@ h1 {
 }
 
 .manager-btn {
-    width: 100%;
-    max-width: 500px;
     text-decoration: none;
-    text-align: center;
 }
 
 /* ===== Grid & Cards ===== */
