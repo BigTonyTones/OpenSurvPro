@@ -244,6 +244,29 @@ h1 {
     gap: 0.75rem;
     color: var(--text-primary);
 }
+#active-screen-info h3 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+#active-screen-info p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+#monitor-list {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.monitor-item {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
 
 /* ===== Buttons ===== */
 .btn {

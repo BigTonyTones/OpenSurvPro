@@ -53,8 +53,9 @@ function updateUI(data) {
         const monitorList = document.getElementById('monitor-list');
         if (monitorList) {
             monitorList.innerHTML = data.monitors.map(m => `
-                <div style="margin-bottom: 0.5rem">
-                    <strong>Monitor ${m.monitor_number + 1}</strong>: ${m.resolution.width}x${m.resolution.height} (${m.monitor_id})
+                <div class="monitor-item">
+                    <span><strong>Monitor ${m.monitor_number + 1}</strong></span>
+                    <span>${m.resolution.width}x${m.resolution.height} (${m.monitor_id})</span>
                 </div>
             `).join('');
         }
