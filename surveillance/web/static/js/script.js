@@ -154,9 +154,47 @@ function closeUpdateNotification() {
     document.getElementById('update-notification').style.display = 'none';
 }
 
+// MPV Config Management
+async function fetchMpvConfig() {
+    try {
+        const response = await fetch('/api/mpv-config');
+        const data = await response.json();
+        const textarea = document.getElementById('mpv-args-textarea');
+        if (textarea && data.args) {
+            textarea.value = data.args;
+        }
+    } catch (e) {
+        console.error('Error fetching MPV config:', e);
+    }
+}
+
+async function saveMpvConfig() {
+    const textarea = document.getElementById('mpv-args-textarea');
+    if (!textarea) return;
+
+    const args = textarea.value;
+    try {
+        const response = await fetch('/api/mpv-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ args: args })
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+            alert('MPV arguments saved successfully! New streams will use these settings.');
+        } else {
+            alert('Error saving arguments: ' + data.message);
+        }
+    } catch (e) {
+        console.error('Error saving MPV config:', e);
+        alert('Failed to save MPV configuration.');
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     fetchData();
     checkForUpdates();
+    fetchMpvConfig();
     setInterval(fetchData, 2000);
 });

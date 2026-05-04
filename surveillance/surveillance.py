@@ -16,6 +16,7 @@ import requests
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 import Xlib.display
+import yaml
 
 from core.util.config import cfg
 from core.util.setuplogging import setup_logging
@@ -219,6 +220,28 @@ def toggle_rotation():
     for sm in screenmanagers:
         sm.disable_autorotation = not sm.disable_autorotation
     return jsonify({"status": "success"})
+
+@app.route('/api/mpv-config', methods=['GET', 'POST'])
+def mpv_config():
+    if request.method == 'GET':
+        return jsonify({"args": cfg.get('mpv', {}).get('default_args', '')})
+    
+    # POST
+    try:
+        new_args = request.json.get('args', '')
+        if 'mpv' not in cfg:
+            cfg['mpv'] = {}
+        cfg['mpv']['default_args'] = new_args
+        
+        # Save to file
+        config_path = os.path.join(BASE_DIR, 'etc', 'general.yml')
+        with open(config_path, 'w') as f:
+            yaml.dump(cfg, f, default_flow_style=False)
+        
+        return jsonify({"status": "success", "message": "MPV arguments updated"})
+    except Exception as e:
+        logger.error(f"API: Error saving MPV config: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/reload', methods=['POST'])
 def reload_config():

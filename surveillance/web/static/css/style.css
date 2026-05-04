@@ -382,32 +382,62 @@ h1 {
 
 /* ===== Technical Details ===== */
 .tech-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .tech-item {
-    background: rgba(255, 255, 255, 0.03);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-sm);
     display: flex;
-    flex-direction: column;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tech-item:last-child {
+    border-bottom: none;
 }
 
 .tech-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--text-muted);
-    font-weight: 800;
-    margin-bottom: 4px;
+    font-weight: 700;
 }
 
 .tech-item span:not(.tech-label) {
     font-family: monospace;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--text-primary);
+}
+
+/* ===== MPV Editor ===== */
+.mpv-editor-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.mpv-textarea {
+    width: 100%;
+    min-height: 120px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-primary);
+    padding: var(--spacing-md);
+    font-family: monospace;
+    font-size: 0.9rem;
+    resize: vertical;
+    transition: all var(--transition-base);
+}
+
+.mpv-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }
 
 /* ===== Controls ===== */
