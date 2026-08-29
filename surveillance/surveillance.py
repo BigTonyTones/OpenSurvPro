@@ -23,7 +23,7 @@ from core.util.setuplogging import setup_logging
 from core.ScreenManager import ScreenManager
 
 # Version Info
-fullversion_for_installer="Tonys OpenSurv Pro v2.1.0"
+fullversion_for_installer="Tonys OpenSurv Pro v2.7.0"
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -131,7 +131,7 @@ def status():
         
         return jsonify({
             "status": "online",
-            "version": "2.0-PRO",
+            "version": "2.7.0",
             "monitors": monitors,
             "screenmanagers": sm_status,
             "system": get_system_info()
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, sigterm_handler)
 
     logger = setup_logging()
-    VERSION = "2.0-PRO"
+    VERSION = "2.7.0"
     logger.info(f"Starting OpenSurv PRO {VERSION}")
 
     # Detect monitors
