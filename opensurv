@@ -10,7 +10,7 @@ xfwm4 &
 
 # Start Tonys OpenSurv Gui Editor
 cd /home/opensurv/lib/Tonys-OpenSurv-Gui-Editor
-python3 server.py &
+python3 server.py > /home/opensurv/logs/gui_editor.log 2>&1 &
 
 #Xlib.display in surveillance.py requires DISPLAY var
 cd /home/opensurv/lib; python3 surveillance.py
