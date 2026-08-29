@@ -106,8 +106,8 @@ else
     echo "  - Installing desktop environment (xfce4)..."
     apt install xfce4 -y > /dev/null 2>&1
 
-    echo "  - Installing Python environment (python3-pygame, python3-pip)..."
-    apt install python3-pygame python3-xlib python3-pip -y > /dev/null 2>&1
+    echo "  - Installing Python environment (python3-pygame, python3-pip, etc)..."
+    apt install python3-pygame python3-xlib python3-pip python3-psutil python3-flask python3-requests python3-yaml -y > /dev/null 2>&1
 
     echo "  - Installing Python library requirements from requirements.txt..."
     pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" > /dev/null 2>&1
