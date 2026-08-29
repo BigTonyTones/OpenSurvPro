@@ -72,7 +72,7 @@ def get_network_details():
     return details
 
 
-def generate_splash_image(output_path, version="v2.7.0", width=1920, height=1080):
+def generate_splash_image(output_path, version="v2.7.5", width=1920, height=1080):
     """Generates a high-resolution dark mode startup splash image showing system & network telemetry"""
     try:
         net = get_network_details()

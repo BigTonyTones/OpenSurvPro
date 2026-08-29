@@ -24,7 +24,7 @@ from core.ScreenManager import ScreenManager
 from core.util.splash import generate_splash_image
 
 # Version Info
-fullversion_for_installer="Tonys OpenSurv Pro v2.7.0"
+fullversion_for_installer="Tonys OpenSurv Pro v2.7.5"
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -132,7 +132,7 @@ def status():
         
         return jsonify({
             "status": "online",
-            "version": "2.7.0",
+            "version": "2.7.5",
             "monitors": monitors,
             "screenmanagers": sm_status,
             "system": get_system_info()
@@ -286,7 +286,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, sigterm_handler)
 
     logger = setup_logging()
-    VERSION = "2.7.0"
+    VERSION = "2.7.5"
     logger.info(f"Starting OpenSurv PRO {VERSION}")
 
     # Generate Dynamic Startup Splash with Live Network Telemetry
