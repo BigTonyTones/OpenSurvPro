@@ -154,6 +154,9 @@ else
     cd "$GUI_DEST" && git pull > /dev/null 2>&1
 fi
 
+echo "  - Installing GUI Editor requirements..."
+pip3 install --upgrade --break-system-packages -r "$GUI_DEST/requirements.txt" > /dev/null 2>&1
+
 # --- Step 7: Finalizing ---
 echo "Step 7/7: Finalizing permissions and starting services..."
 chown -Rc opensurv:opensurv /home/opensurv > /dev/null 2>&1

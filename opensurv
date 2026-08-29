@@ -7,5 +7,10 @@ export DISPLAY=:0
 /usr/bin/unclutter -idle 2 -root &
 # Start the XFCE window manager
 xfwm4 &
+
+# Start Tonys OpenSurv Gui Editor
+cd /home/opensurv/lib/Tonys-OpenSurv-Gui-Editor
+python3 server.py &
+
 #Xlib.display in surveillance.py requires DISPLAY var
 cd /home/opensurv/lib; python3 surveillance.py
