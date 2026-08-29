@@ -177,6 +177,8 @@ if [ ! -f /home/opensurv/firstinstall_DONE ];then
   reboot
 fi
 
+systemctl set-default graphical.target > /dev/null 2>&1
+systemctl enable lightdm > /dev/null 2>&1
 systemctl daemon-reload
 systemctl restart lightdm
 
