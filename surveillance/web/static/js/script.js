@@ -150,6 +150,19 @@ async function checkForUpdates(manual = false) {
     }
 }
 
+async function applyUpdate() {
+    if (confirm("This will pull the latest version and reboot the system. Continue?")) {
+        try {
+            await fetch('/api/apply-update', { method: 'POST' });
+            alert("Update started! The system will reboot shortly.");
+            closeUpdateNotification();
+        } catch (e) {
+            console.error('Failed to trigger update:', e);
+            alert("Failed to start the update process.");
+        }
+    }
+}
+
 function closeUpdateNotification() {
     document.getElementById('update-notification').style.display = 'none';
 }

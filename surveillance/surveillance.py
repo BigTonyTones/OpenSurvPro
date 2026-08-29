@@ -197,6 +197,28 @@ def check_update():
     
     return jsonify({"update_available": False, "error": "Could not reach update server"})
 
+@app.route('/api/apply-update', methods=['POST'])
+def apply_update():
+    """Pulls the latest code and runs the auto installer"""
+    logger.info("API: Applying update...")
+    def update():
+        try:
+            repo_path_file = os.path.join(BASE_DIR, '.repo_path')
+            if os.path.exists(repo_path_file):
+                with open(repo_path_file, 'r') as f:
+                    repo_path = f.read().strip()
+                logger.info(f"API: Running auto-update in {repo_path}")
+                # Wait 1 second to let the API response return before starting heavy processes
+                time.sleep(1)
+                os.system(f"cd {repo_path} && sudo git pull && sudo ./install.sh --auto")
+            else:
+                logger.error("API: .repo_path file not found. Cannot auto update.")
+        except Exception as e:
+            logger.error(f"API: Failed to apply update: {e}")
+    
+    threading.Thread(target=update).start()
+    return jsonify({"status": "success", "message": "Updating and rebooting..."})
+
 @app.route('/api/stop-service', methods=['POST'])
 def stop_service():
     """Stops the OpenSurv service (and LightDM)"""
