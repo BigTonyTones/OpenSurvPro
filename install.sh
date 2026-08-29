@@ -89,7 +89,7 @@ fi
 
 # --- Step 2: Dependencies ---
 echo "Step 2/7: Checking and installing dependencies..."
-REQUIRED_PKGS="xdotool mpv ffmpeg wmctrl unclutter xfce4 python3-pygame python3-xlib python3-pip python3-psutil python3-flask python3-flask-cors python3-requests python3-yaml"
+REQUIRED_PKGS="xdotool mpv ffmpeg wmctrl unclutter xfce4 python3-pygame python3-xlib python3-pip python3-psutil python3-flask python3-flask-cors python3-requests python3-yaml python3-pil"
 MISSING_PKGS=""
 
 for pkg in $REQUIRED_PKGS; do

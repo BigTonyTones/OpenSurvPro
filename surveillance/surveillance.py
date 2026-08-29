@@ -21,6 +21,7 @@ import yaml
 from core.util.config import cfg
 from core.util.setuplogging import setup_logging
 from core.ScreenManager import ScreenManager
+from core.util.splash import generate_splash_image
 
 # Version Info
 fullversion_for_installer="Tonys OpenSurv Pro v2.7.0"
@@ -287,6 +288,13 @@ if __name__ == '__main__':
     logger = setup_logging()
     VERSION = "2.7.0"
     logger.info(f"Starting OpenSurv PRO {VERSION}")
+
+    # Generate Dynamic Startup Splash with Live Network Telemetry
+    try:
+        splash_path = os.path.join(BASE_DIR, 'images', 'loading.png')
+        generate_splash_image(splash_path, version=f"v{VERSION}")
+    except Exception as e:
+        logger.warning(f"Could not generate dynamic startup splash: {e}")
 
     # Detect monitors
     monitors = get_monitors()
