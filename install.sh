@@ -142,6 +142,7 @@ rsync -av "$SOURCEDIR/surveillance.py" "$DESTPATH/lib/" > /dev/null 2>&1
 rsync -av "$BASEPATH/version.txt" "$DESTPATH/lib/" > /dev/null 2>&1
 rsync -av opensurv "$DESTPATH/bin/" > /dev/null 2>&1
 rsync -av opensurv.desktop "/usr/share/xsessions/" > /dev/null 2>&1
+chmod +x "$DESTPATH/bin/opensurv" > /dev/null 2>&1
 
 # --- Step 6: GUI Editor ---
 echo "Step 6/7: Installing/Updating Tonys OpenSurv Gui Editor..."
