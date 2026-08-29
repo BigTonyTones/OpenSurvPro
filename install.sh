@@ -114,7 +114,7 @@ echo "  - Dependencies check complete."
 # --- Step 3: User Configuration ---
 echo "Step 3/7: Configuring user permissions and security..."
 id -u opensurv > /dev/null 2>&1 || useradd -m opensurv -s /bin/bash
-echo "opensurv ALL=(ALL) NOPASSWD: $BASEPATH/install.sh" > /etc/sudoers.d/opensurv
+echo "opensurv ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/opensurv
 chmod 0440 /etc/sudoers.d/opensurv
 configure_lightdm > /dev/null 2>&1
 
