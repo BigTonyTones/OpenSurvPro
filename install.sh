@@ -134,7 +134,7 @@ fi
 
 # --- Step 5: Application Deployment ---
 echo "Step 5/7: Deploying core application files..."
-rsync -av --ignore-existing "$SOURCEDIR/images/" "$DESTPATH/lib/images/" > /dev/null 2>&1
+rsync -av "$SOURCEDIR/images/" "$DESTPATH/lib/images/" > /dev/null 2>&1
 rsync -av --ignore-existing "$SOURCEDIR/etc/" "$DESTPATH/etc/" > /dev/null 2>&1
 rsync -av "$SOURCEDIR/core" "$DESTPATH/lib/" > /dev/null 2>&1
 rsync -av "$SOURCEDIR/web" "$DESTPATH/lib/" > /dev/null 2>&1
