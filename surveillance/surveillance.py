@@ -293,6 +293,8 @@ if __name__ == '__main__':
     try:
         splash_path = os.path.join(BASE_DIR, 'images', 'loading.png')
         generate_splash_image(splash_path, version=f"v{VERSION}")
+        conn_path = os.path.join(BASE_DIR, 'images', 'connecting.png')
+        generate_splash_image(conn_path, version=f"v{VERSION}")
     except Exception as e:
         logger.warning(f"Could not generate dynamic startup splash: {e}")
 
