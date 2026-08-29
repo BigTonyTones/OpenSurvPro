@@ -88,34 +88,28 @@ if [ "$KILL_SERVER" = true ]; then
 fi
 
 # --- Step 2: Dependencies ---
-FORCE_DEPS=false
-for arg in "$@"; do
-    if [ "$arg" == "--force-deps" ]; then FORCE_DEPS=true; fi
+echo "Step 2/7: Checking and installing dependencies..."
+REQUIRED_PKGS="xdotool mpv ffmpeg wmctrl unclutter xfce4 python3-pygame python3-xlib python3-pip python3-psutil python3-flask python3-requests python3-yaml"
+MISSING_PKGS=""
+
+for pkg in $REQUIRED_PKGS; do
+    if ! dpkg -s $pkg >/dev/null 2>&1; then
+        MISSING_PKGS="$MISSING_PKGS $pkg"
+    fi
 done
 
-if [ -f "/home/opensurv/.deps_installed" ] && [ "$FORCE_DEPS" = false ]; then
-    echo "Step 2/7: Dependencies already installed. Skipping... (use --force-deps to update)"
-else
-    echo "Step 2/7: Installing system and Python dependencies..."
+if [ -n "$MISSING_PKGS" ]; then
     echo "  - Updating package repositories..."
     apt update > /dev/null 2>&1
-
-    echo "  - Installing core system utilities (xdotool, mpv, ffmpeg)..."
-    apt install xdotool mpv ffmpeg wmctrl unclutter -y > /dev/null 2>&1
-
-    echo "  - Installing desktop environment (xfce4)..."
-    apt install xfce4 -y > /dev/null 2>&1
-
-    echo "  - Installing Python environment (python3-pygame, python3-pip, etc)..."
-    apt install python3-pygame python3-xlib python3-pip python3-psutil python3-flask python3-requests python3-yaml -y > /dev/null 2>&1
-
-    echo "  - Installing Python library requirements from requirements.txt..."
-    pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" > /dev/null 2>&1
-    
-    # Create marker file
-    touch /home/opensurv/.deps_installed
-    echo "  - Dependencies installation complete."
+    echo "  - Installing missing dependencies:$MISSING_PKGS"
+    apt install $MISSING_PKGS -y > /dev/null 2>&1
+else
+    echo "  - System packages already installed."
 fi
+
+echo "  - Verifying Python requirements from requirements.txt..."
+pip3 install --upgrade --break-system-packages -r "$BASEPATH/requirements.txt" > /dev/null 2>&1
+echo "  - Dependencies check complete."
 
 # --- Step 3: User Configuration ---
 echo "Step 3/7: Configuring user permissions and security..."
